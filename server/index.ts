@@ -10,6 +10,12 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
+  // This endpoint intentionally does not touch Supabase secrets. Railway can
+  // use it for health checks while protected integrations remain lazy-loaded.
+  app.get("/api/health", (_req, res) => {
+    res.status(200).json({ ok: true, service: "pagina-inteligente" });
+  });
+
   // Serve static files from dist/public in production
   const staticPath =
     process.env.NODE_ENV === "production"
@@ -23,11 +29,14 @@ async function startServer() {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 
-  const port = process.env.PORT || 3000;
+  const port = Number(process.env.PORT || 3000);
 
-  server.listen(port, () => {
+  server.listen(port, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
 }
 
-startServer().catch(console.error);
+startServer().catch((error) => {
+  console.error("Unable to start Página Inteligente server", error);
+  process.exitCode = 1;
+});

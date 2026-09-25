@@ -5,10 +5,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build:frontend": "vite build",
+    "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build": "npm run build:frontend && npm run build:server",
     "start": "NODE_ENV=production node dist/index.js",
+    "railway:health": "node -e \"fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/api/health').then(r=>{if(!r.ok)process.exit(1);console.log('healthy')}).catch(()=>process.exit(1))\"",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
+    "test": "vitest run --root . server/env.test.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -88,6 +92,9 @@
     "vite": "^7.1.7",
     "vite-plugin-manus-runtime": "^0.0.58",
     "vitest": "^2.1.4"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
   "pnpm": {

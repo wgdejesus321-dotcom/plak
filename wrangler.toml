@@ -1,6 +1,6 @@
 name = "pagina-inteligente"
 compatibility_date = "2026-09-25"
-pages_build_output_dir = "dist"
+pages_build_output_dir = "dist/public"
 
 # Optional R2 binding for a future Pages Function upload/signing adapter.
 # [[r2_buckets]]

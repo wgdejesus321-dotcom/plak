@@ -20,15 +20,15 @@ O produto original era uma plataforma de links para múltiplos estabelecimentos,
 
 ## Variáveis
 
-Copie `.env.example` para `.env.local` durante o desenvolvimento. Obtenha `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` em **Supabase → Project Settings → API**. A chave anon é a única chave Supabase usada no browser. Nunca coloque a `service_role` ou segredos R2 em variáveis `VITE_*`.
+Copie `.env.example` para `.env.local` durante o desenvolvimento. Para projetos Supabase novos, use `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` no browser. `VITE_SUPABASE_ANON_KEY` continua aceito apenas como compatibilidade legada. No servidor, use `SUPABASE_URL` e `SUPABASE_SECRET_KEY`; `SUPABASE_SERVICE_ROLE_KEY` continua aceito para projetos legados. Nunca coloque uma secret/service-role key ou segredos R2 em variáveis `VITE_*`.
 
 ## Supabase
 
 1. Crie um projeto em supabase.com.
-2. Abra **SQL Editor** e execute `supabase/migrations/0001_pagina_inteligente.sql`.
+2. Instale o Supabase CLI, execute `supabase link --project-ref SEU_PROJECT_REF` e aplique `supabase db push`. A migration versionada em `supabase/migrations/0001_pagina_inteligente.sql` é a fonte de verdade; evite alterar o banco remoto manualmente depois que o fluxo de migrations começar.
 3. Em **Authentication → Providers**, habilite Email/Password e defina as URLs permitidas para o domínio local e de produção.
 4. Crie o primeiro usuário pelo `/login`.
-5. Promova esse usuário a admin apenas pelo SQL Editor, uma única vez: `update public.profiles set role = 'admin', access_status = 'approved', is_protected = true where email = 'SEU_EMAIL';`
+5. Promova esse usuário a admin apenas em uma migration/SQL controlado, uma única vez: `update public.profiles set role = 'admin', access_status = 'approved', is_protected = true where email = 'SEU_EMAIL';`
 6. Confirme em **Storage** que o bucket `business-assets` foi criado como público. As policies da migration limitam gravação a admins.
 
 ## Desenvolvimento e build
@@ -42,13 +42,21 @@ pnpm check
 pnpm build
 ```
 
-O comando de build gera `dist/`, adequado para Cloudflare Pages. A aplicação mostra estados explícitos de carregamento, sessão ausente e erro de conexão, em vez de simular dados.
+O comando de build gera `dist/`, adequado para Cloudflare Pages ou para o servidor Express da Railway. A aplicação mostra estados explícitos de carregamento, sessão ausente e erro de conexão, em vez de simular dados. O build não lê nem valida secrets de backend.
+
+## Railway
+
+Use `pnpm build` como Build Command e `pnpm start` como Start Command. O `railway.json` e o `nixpacks.toml` já contêm essa configuração e fixam a instalação pelo `pnpm-lock.yaml`. `npm run build` também funciona quando as dependências já foram instaladas. O health check `/api/health` responde sem acessar Supabase, portanto a aplicação pode iniciar mesmo que a Railway ainda esteja propagando variáveis.
+
+No painel da Railway, adicione `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` como **Service Variables** somente se o serviço tiver rotas backend administrativas que usem `server/supabase-admin.ts`. A chave service role nunca deve ser prefixada com `VITE_` e nunca deve ser adicionada a `client/src`. No navegador, a aplicação usa exclusivamente `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`.
+
+`SUPABASE_SERVICE_ROLE_KEY` é validada de forma lazy por `getSupabaseServiceRoleKey()`: a ausência da chave não quebra o build nem o arranque do servidor; produz um erro claro apenas quando uma operação protegida realmente solicitar o cliente admin. A implementação atual não usa essa chave nas rotas estáticas, mas o limite de segurança está preparado para futuras rotas.
 
 ## Cloudflare Pages
 
 1. Crie um projeto em **Workers & Pages → Pages → Connect to Git**.
 2. Build command: `pnpm build`.
-3. Output directory: `dist`.
+3. Output directory: `dist/public` (Railway usa o servidor em `dist/index.js`; Cloudflare Pages usa somente o frontend estático).
 4. Node version: 22 (ou a versão suportada pelo seu ambiente).
 5. Em **Settings → Environment variables**, adicione `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` para Preview e Production.
 6. Faça deploy. Configure o domínio em **Custom domains** e aguarde o certificado HTTPS.

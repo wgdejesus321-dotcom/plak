@@ -28,7 +28,7 @@ drop policy if exists links_public_read on public.business_links; create policy 
 drop policy if exists links_admin_write on public.business_links; create policy links_admin_write on public.business_links for all using (public.is_admin()) with check (public.is_admin());
 drop policy if exists media_public_read on public.business_media; create policy media_public_read on public.business_media for select using (exists(select 1 from public.businesses b where b.id = business_id and (b.status = 'published' or public.is_admin())));
 drop policy if exists media_admin_write on public.business_media; create policy media_admin_write on public.business_media for all using (public.is_admin()) with check (public.is_admin());
-drop policy if exists analytics_insert_public on public.analytics_events; create policy analytics_insert_public on public.analytics_events for insert with check (true);
+drop policy if exists analytics_insert_public on public.analytics_events; create policy analytics_insert_public on public.analytics_events for insert to anon, authenticated with check (exists(select 1 from public.businesses b where b.id = business_id and b.status = 'published'));
 drop policy if exists analytics_admin_read on public.analytics_events; create policy analytics_admin_read on public.analytics_events for select using (public.is_admin());
 
 insert into storage.buckets (id, name, public) values ('business-assets', 'business-assets', true) on conflict (id) do nothing;

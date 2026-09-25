@@ -1,4 +1,5 @@
-project_id = "pagina-inteligente"
+# Replace this with the real Supabase project ref after `supabase link`.
+project_id = "your-project-ref"
 [api]
 enabled = true
 [db]
