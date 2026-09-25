@@ -1,0 +1,13 @@
+name = "pagina-inteligente"
+compatibility_date = "2026-09-25"
+pages_build_output_dir = "dist"
+
+# Optional R2 binding for a future Pages Function upload/signing adapter.
+# [[r2_buckets]]
+# binding = "ASSETS_BUCKET"
+# bucket_name = "pagina-inteligente-assets"
+
+[vars]
+# Public Supabase values may be configured in Pages project settings instead.
+# VITE_SUPABASE_URL = "https://YOUR_PROJECT.supabase.co"
+# VITE_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"
