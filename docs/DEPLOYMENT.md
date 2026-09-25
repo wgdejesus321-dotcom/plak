@@ -23,7 +23,7 @@
 - Server-only variables: `SUPABASE_URL` e `SUPABASE_SECRET_KEY` (ou `SUPABASE_SERVICE_ROLE_KEY` legado), somente como Service Variables da Railway.
 - Nunca use `VITE_SUPABASE_SECRET_KEY` ou `VITE_SUPABASE_SERVICE_ROLE_KEY`, nunca importe uma secret key em `client/src` e nunca coloque uma chave real em arquivos versionados.
 - O servidor não valida a service role no boot. O helper `server/supabase-admin.ts` só cria o cliente privilegiado quando uma rota backend o chama; `/api/health` funciona sem essa chave.
-- O repositório inclui `pnpm-lock.yaml` e `nixpacks.toml` para tornar a instalação Railway determinística; não remova o lockfile nem misture `npm install` com `pnpm install` no mesmo deploy.
+- O repositório inclui `pnpm-lock.yaml` e declara `packageManager` no `package.json`; o Railway pode detectar o projeto Node/pnpm nativamente. Não remova o lockfile nem misture `npm install` com `pnpm install` no mesmo deploy.
 
 ## 5. Supabase migrations
 

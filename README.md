@@ -46,7 +46,7 @@ O comando de build gera `dist/`, adequado para Cloudflare Pages ou para o servid
 
 ## Railway
 
-Use `pnpm build` como Build Command e `pnpm start` como Start Command. O `railway.json` e o `nixpacks.toml` já contêm essa configuração e fixam a instalação pelo `pnpm-lock.yaml`. `npm run build` também funciona quando as dependências já foram instaladas. O health check `/api/health` responde sem acessar Supabase, portanto a aplicação pode iniciar mesmo que a Railway ainda esteja propagando variáveis.
+Use `pnpm build` como Build Command e `pnpm start` como Start Command. O `railway.json`, o `packageManager` e o `pnpm-lock.yaml` permitem que o Railway detecte o projeto Node/pnpm nativamente, sem um override Nixpacks customizado. `npm run build` também funciona quando as dependências já foram instaladas. O health check `/api/health` responde sem acessar Supabase, portanto a aplicação pode iniciar mesmo que a Railway ainda esteja propagando variáveis.
 
 No painel da Railway, adicione `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` como **Service Variables** somente se o serviço tiver rotas backend administrativas que usem `server/supabase-admin.ts`. A chave service role nunca deve ser prefixada com `VITE_` e nunca deve ser adicionada a `client/src`. No navegador, a aplicação usa exclusivamente `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`.
 
