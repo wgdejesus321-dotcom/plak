@@ -2,9 +2,9 @@ import { createClient, type Session, type SupabaseClient, type User } from "@sup
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-export const supabaseConfigured = Boolean(url && anonKey);
-export const supabase: SupabaseClient | null = supabaseConfigured ? createClient(url!, anonKey!, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }) : null;
+const publishableKey = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY) as string | undefined;
+export const supabaseConfigured = Boolean(url && publishableKey);
+export const supabase: SupabaseClient | null = supabaseConfigured ? createClient(url!, publishableKey!, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }) : null;
 
 interface AuthState { session: Session | null; user: User | null; loading: boolean; signOut: () => Promise<void>; }
 const AuthContext = createContext<AuthState>({ session: null, user: null, loading: true, signOut: async () => undefined });

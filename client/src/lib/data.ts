@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 import type { AnalyticsEvent, AnalyticsSummary, Business, BusinessBundle, BusinessForm, BusinessLink, BusinessMedia, Profile } from "./types";
-export const dbError = "Conecte o Supabase para carregar dados reais. Configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.";
+export const dbError = "Conecte o Supabase para carregar dados reais. Configure VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY (ou VITE_SUPABASE_ANON_KEY legado).";
 function requireDb() { if (!supabase) throw new Error(dbError); return supabase; }
 export async function listBusinesses() { const { data, error } = await requireDb().from("businesses").select("*").order("created_at", { ascending: false }); if (error) throw error; return (data ?? []) as Business[]; }
 export async function getBusinessBySlug(slug: string, publishedOnly = true) { const db = requireDb(); let query = db.from("businesses").select("*, business_links(*), business_media(*)").eq("slug", slug); if (publishedOnly) query = query.eq("status", "published"); const { data, error } = await query.maybeSingle(); if (error) throw error; if (!data) return null; return { business: data as Business, links: ((data as any).business_links ?? []).sort((a: BusinessLink, b: BusinessLink) => a.position - b.position), media: ((data as any).business_media ?? []).sort((a: BusinessMedia, b: BusinessMedia) => a.position - b.position) } as BusinessBundle; }
