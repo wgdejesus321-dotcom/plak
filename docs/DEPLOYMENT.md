@@ -2,7 +2,7 @@
 
 ## 1. Supabase
 - Criar projeto e copiar URL/API anon key.
-- Executar `supabase/migrations/0001_pagina_inteligente.sql`.
+- Executar `supabase/migrations/0001_plak.sql`.
 - Habilitar Email/Password em Auth.
 - Configurar Site URL e Redirect URLs para local e domínio Pages.
 - Criar primeiro usuário, promover a admin no SQL Editor e testar logout/login.

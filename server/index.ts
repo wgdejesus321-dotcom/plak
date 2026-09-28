@@ -13,7 +13,7 @@ async function startServer() {
   // This endpoint intentionally does not touch Supabase secrets. Railway can
   // use it for health checks while protected integrations remain lazy-loaded.
   app.get("/api/health", (_req, res) => {
-    res.status(200).json({ ok: true, service: "pagina-inteligente" });
+    res.status(200).json({ ok: true, service: "plak" });
   });
 
   // Serve static files from dist/public in production
@@ -37,6 +37,6 @@ async function startServer() {
 }
 
 startServer().catch((error) => {
-  console.error("Unable to start Página Inteligente server", error);
+  console.error("Unable to start Plak server", error);
   process.exitCode = 1;
 });

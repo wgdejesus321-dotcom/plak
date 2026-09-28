@@ -1,4 +1,4 @@
-# Página Inteligente — rebuild independente
+# Plak — rebuild independente
 
 Aplicação multi-tenant para criar páginas digitais de negócios, publicar links permanentes para QR Code/NFC e acompanhar visitas e cliques. Esta versão foi reconstruída do zero como uma aplicação React + TypeScript, sem reutilizar a implementação do projeto de referência.
 
@@ -70,7 +70,7 @@ No painel da Railway, adicione `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` como
 - `businesses`: identidade, contatos, tema, SEO e ciclo draft/published/inactive.
 - `business_links`: links customizados ordenados por negócio.
 - `business_media`: imagens/vídeos ordenados por negócio.
-- `analytics_events`: eventos anônimos de view/click com origem e dispositivo.
+- `analytics_events`: eventos anônimos de view/click/share com origem e dispositivo.
 - Storage `business-assets`: logos, backgrounds e mídia.
 
 RLS permite leitura pública somente para negócios publicados e suas relações. Escritas privadas exigem um perfil admin aprovado. Eventos podem ser inseridos anonimamente, mas apenas admins podem lê-los.

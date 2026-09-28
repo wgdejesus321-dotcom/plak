@@ -1,11 +1,11 @@
-name = "pagina-inteligente"
+name = "plak"
 compatibility_date = "2026-09-25"
 pages_build_output_dir = "dist/public"
 
 # Optional R2 binding for a future Pages Function upload/signing adapter.
 # [[r2_buckets]]
 # binding = "ASSETS_BUCKET"
-# bucket_name = "pagina-inteligente-assets"
+# bucket_name = "plak-assets"
 
 [vars]
 # Public Supabase values may be configured in Pages project settings instead.
