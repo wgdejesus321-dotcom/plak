@@ -1,2 +1,13 @@
-import { ScanLine } from "lucide-react";
-export function BrandLogo({ inverse = false, compact = false }: { inverse?: boolean; compact?: boolean }) { return <div className={`flex items-center gap-2.5 ${inverse ? "text-[#f9f7f1]" : "text-[#183039]"}`}><span className={`grid h-9 w-9 place-items-center rounded-xl ${inverse ? "bg-[#d7f56c] text-[#183039]" : "bg-[#e3edd8] text-[#618454]"}`}><ScanLine className="h-4 w-4" /></span>{!compact && <span className="font-display text-lg font-bold tracking-[-.04em]">Página <span className={inverse ? "text-[#d7f56c]" : "text-[#6a9259]"}>Inteligente</span></span>}</div>; }
+import { Radio } from "lucide-react";
+
+export function BrandLogo({ inverse = false, compact = false }: { inverse?: boolean; compact?: boolean }) {
+  return (
+    <div className={`flex items-center gap-3 ${inverse ? "text-white" : "text-[#14252c]"}`} aria-label="Plak">
+      <span className={`relative grid h-9 w-9 place-items-center rounded-xl border-2 ${inverse ? "border-[#d7f56c] text-[#d7f56c]" : "border-[#14252c] text-[#14252c]"}`}>
+        <span className="font-display text-2xl font-black leading-none">P</span>
+        <Radio className="absolute -right-1 -top-1 h-3.5 w-3.5" strokeWidth={2.5} />
+      </span>
+      {!compact && <span className="font-display text-xl font-black tracking-[.08em]">PLAK</span>}
+    </div>
+  );
+}
