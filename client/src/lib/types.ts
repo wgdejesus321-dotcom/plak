@@ -9,7 +9,7 @@ export type DeviceType = "mobile" | "tablet" | "desktop";
 export type ProfilePosition = "top" | "cover" | "hidden";
 export type ProfileShape = "rounded" | "circle" | "square";
 export type ButtonStyle = "soft" | "pill" | "outline" | "glass";
-export interface LayoutConfig { cover_enabled: boolean; profile_position: ProfilePosition; profile_shape: ProfileShape; text_align: "left" | "center"; button_style: ButtonStyle; show_gallery: boolean; cover_treatment?: "original" | "dark" | "light" | "gray"; }
+export interface LayoutConfig { cover_enabled: boolean; profile_position: ProfilePosition; profile_shape: ProfileShape; text_align: "left" | "center"; button_style: ButtonStyle; show_gallery: boolean; cover_treatment?: "original" | "dark" | "light" | "gray"; logo_size?: "small" | "medium" | "large"; logo_shape?: "circle" | "rounded" | "square"; logo_fit?: "contain" | "cover"; cover_opacity?: number; }
 export interface CatalogItem { id: string; title: string; description: string; price: string; image_url: string; button_label: string; button_url: string; }
 export interface FeatureConfig {
   lead_enabled: boolean;
