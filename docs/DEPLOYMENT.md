@@ -42,3 +42,10 @@
 - Adicionar domínio customizado no Pages.
 - Adicionar o domínio final nos Redirect URLs do Supabase.
 - Para atualizar: aplicar novas migrations, rodar `pnpm check`, `pnpm build` e publicar novo deploy.
+
+## 6. Recursos premium PLAK
+- Executar `supabase db push` para aplicar `supabase/migrations/0003_growth_features.sql`.
+- A migration cria `businesses.features` para campanha, catálogo, depoimentos, leads e identificação do QR.
+- A migration cria a tabela `leads` com inserção pública controlada e leitura protegida para administradores.
+- Depois da migration, publicar novamente o frontend e o servidor no Railway.
+- No painel, acessar **Modelos prontos** para replicar presets e **Leads** para acompanhar contatos recebidos.
