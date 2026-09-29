@@ -103,3 +103,18 @@
   .editor-modern[data-editor-step="3"] .editor-steps .editor-step:not(:nth-of-type(4)),
   .editor-modern[data-editor-step="4"] .editor-steps .editor-step:not(:nth-of-type(7)) { opacity: .42; }
 }
+
+@layer components {
+  .editor-modern { margin: -1.5rem -1rem; padding: 1.5rem 1rem 2.5rem; border-radius: 32px; background: radial-gradient(circle at 86% 3%, rgba(216,238,119,.08), transparent 24%), linear-gradient(135deg, #0d171c, #12242a 58%, #0e191e); color: #eef4ed; }
+  .editor-modern .page-title { @apply text-white; }
+  .editor-modern .page-subtitle { @apply text-white/50; }
+  .editor-modern .eyebrow { @apply text-[#d8ee77]; }
+  .editor-modern > div:first-child > a { @apply text-white/55 hover:bg-white/10 hover:text-white; }
+  .editor-modern .editor-live-field { @apply mt-2 block rounded-xl border border-[#d8ee77]/20 bg-[#edf5da] px-3 py-2 text-xs font-bold leading-5 text-[#4d684b]; overflow-wrap: anywhere; }
+  .editor-phone-shell { position: relative; width: 300px; height: 650px; margin: 0 auto; padding: 10px; border: 8px solid #1d3037; border-radius: 48px; background: #0a1317; box-shadow: 0 30px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(216,238,119,.1); }
+  .editor-phone-camera { position: absolute; z-index: 2; top: 11px; left: 50%; width: 84px; height: 20px; transform: translateX(-50%); border-radius: 999px; background: #081014; }
+  .editor-phone-screen { height: 100%; overflow-y: auto; border-radius: 36px; padding: 34px 17px 20px; color: #20383c; scrollbar-width: thin; }
+  .editor-phone-screen::-webkit-scrollbar { width: 5px; }
+  .editor-phone-screen::-webkit-scrollbar-thumb { border: 0; background: #b8c8bb; }
+  @media (min-width: 640px) { .editor-modern { margin: -2.5rem -1.75rem; padding: 2.5rem 1.75rem 3.5rem; } }
+}

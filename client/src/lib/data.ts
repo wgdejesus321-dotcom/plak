@@ -1,9 +1,9 @@
 import { supabase } from "./supabase";
-import type { AnalyticsEvent, AnalyticsSummary, Business, BusinessBundle, BusinessForm, BusinessLink, BusinessMedia, Profile } from "./types";
+import type { AnalyticsEvent, AnalyticsSummary, Business, BusinessBundle, BusinessForm, BusinessLink, BusinessMedia, Lead, Profile } from "./types";
 import { normalizeBusinessForm } from "./validation";
 
 export const dbError = "Conecte o Supabase para carregar dados reais. Configure as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY.";
-const businessColumns = "id,name,slug,logo_url,tagline,google_review_url,whatsapp_number,whatsapp_message,instagram_url,website_url,address,maps_url,primary_color,secondary_color,background_color,background_image_url,standard_button_color,custom_button_color,seo_title,seo_description,seo_image_url,status,published_at,created_at,updated_at,created_by";
+const businessColumns = "id,name,slug,logo_url,tagline,google_review_url,whatsapp_number,whatsapp_message,instagram_url,website_url,address,maps_url,primary_color,secondary_color,background_color,background_image_url,standard_button_color,custom_button_color,seo_title,seo_description,seo_image_url,features,status,published_at,created_at,updated_at,created_by";
 const profileColumns = "id,full_name,email,role,access_status,is_protected,created_at";
 
 function requireDb() { if (!supabase) throw new Error(dbError); return supabase; }
@@ -62,6 +62,7 @@ export async function saveBusiness(rawForm: BusinessForm, id?: string) {
     seo_title: form.seo_title || `${form.name} | Página oficial`,
     seo_description: form.seo_description || `Conheça ${form.name}, entre em contato e encontre tudo em um só lugar.`,
     seo_image_url: form.seo_image_url || null,
+    features: form.features,
   };
   const result = id
     ? await db.from("businesses").update(payload).eq("id", id).select(businessColumns).single()
@@ -167,4 +168,25 @@ export async function updateProfileRole(id: string, role: "user" | "admin") {
 export async function removeProfile(id: string) {
   const { error } = await requireDb().from("profiles").delete().eq("id", id);
   if (error) throw error;
+}
+
+
+export async function createLead(lead: Omit<Lead, "id" | "created_at" | "status">) {
+  const { data, error } = await requireDb().from("leads").insert({ ...lead, status: "new" }).select("*").single();
+  if (error) throw error;
+  return data as Lead;
+}
+
+export async function listLeads(businessId?: string) {
+  let query = requireDb().from("leads").select("*").order("created_at", { ascending: false });
+  if (businessId) query = query.eq("business_id", businessId);
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data ?? []) as Lead[];
+}
+
+export async function duplicateBusiness(id: string) {
+  const source = await getBusiness(id);
+  const copy: BusinessForm = { name: `${source.name} (cópia)`, slug: `${source.slug}-copia`, logo_url: source.logo_url || "", tagline: source.tagline, google_review_url: source.google_review_url || "", whatsapp_number: source.whatsapp_number || "", whatsapp_message: source.whatsapp_message || "", instagram_url: source.instagram_url || "", website_url: source.website_url || "", address: source.address || "", maps_url: source.maps_url || "", primary_color: source.primary_color, secondary_color: source.secondary_color, background_color: source.background_color, background_image_url: source.background_image_url || "", standard_button_color: source.standard_button_color, custom_button_color: source.custom_button_color, seo_title: source.seo_title || "", seo_description: source.seo_description || "", seo_image_url: source.seo_image_url || "", features: source.features, links: (source.business_links || []).map(({ id: _id, business_id: _businessId, ...link }) => link), media: (source.business_media || []).map(({ id: _id, business_id: _businessId, ...media }) => media) };
+  return saveBusiness(copy);
 }
