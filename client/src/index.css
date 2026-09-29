@@ -98,6 +98,8 @@
   .editor-modern[data-editor-step="2"] .editor-wizard-panel:not(.step-2),
   .editor-modern[data-editor-step="3"] .editor-wizard-panel:not(.step-3),
   .editor-modern[data-editor-step="4"] .editor-wizard-panel:not(.step-4) { display: none; }
+  .editor-modern[data-editor-step="5"] .editor-wizard-panel:not(.step-5) { display: none; }
+  .editor-modern[data-editor-step="6"] .editor-wizard-panel:not(.step-6) { display: none; }
   .editor-modern .editor-wizard-panel { animation: editor-panel-in 260ms cubic-bezier(.23,1,.32,1); }
   .editor-modern .editor-card { border-radius: 28px; }
   .editor-modern .editor-card > div:last-child { max-width: 900px; }
@@ -119,3 +121,20 @@
 }
 
 @keyframes editor-panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+@layer components {
+  .editor-expanded-preview { position: absolute; z-index: 4; top: calc(100% + 8px); left: 0; right: 0; min-height: 48px; display: flex; align-items: center; gap: 10px; overflow: hidden; border: 1px solid #cfe09b; border-radius: 16px; background: #17262d; padding: 10px 13px; color: #f5f8ed; font-size: 18px; font-weight: 800; letter-spacing: -.03em; box-shadow: 0 16px 28px rgba(19,38,45,.18); animation: editor-panel-in 180ms ease-out; }
+  .editor-expanded-preview span { flex: none; border-radius: 999px; background: #d8ee77; padding: 4px 7px; color: #17262d; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; }
+  .editor-phone-screen img, .editor-phone-screen video { display: block; }
+}
+
+@layer components {
+  #editor-links > .editor-card + .editor-card, #editor-recursos > .editor-card + .editor-card, #editor-seo > .editor-card + .editor-card { margin-top: 1.25rem; }
+  #editor-links .editor-card, #editor-recursos .editor-card, #editor-seo .editor-card { border: 1px solid rgba(213,225,212,.95); box-shadow: 0 14px 30px rgba(19,38,45,.05); }
+}
+
+@layer components {
+  [data-button-style="pill"] .rounded\[20px\] { border-radius: 999px; }
+  [data-button-style="outline"] .rounded\[20px\] { background-color: transparent !important; border: 1px solid currentColor; box-shadow: none; color: #2e4948 !important; }
+  [data-button-style="glass"] .rounded\[20px\] { background-color: rgba(255,255,255,.48) !important; backdrop-filter: blur(14px); border-color: rgba(255,255,255,.75); }
+}

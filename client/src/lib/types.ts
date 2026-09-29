@@ -6,16 +6,24 @@ export type MediaType = "image" | "video";
 export type AnalyticsSource = "instagram" | "whatsapp" | "google" | "placa" | "direct" | "other";
 export type DeviceType = "mobile" | "tablet" | "desktop";
 
+export type ProfilePosition = "top" | "cover" | "hidden";
+export type ProfileShape = "rounded" | "circle" | "square";
+export type ButtonStyle = "soft" | "pill" | "outline" | "glass";
+export interface LayoutConfig { cover_enabled: boolean; profile_position: ProfilePosition; profile_shape: ProfileShape; text_align: "left" | "center"; button_style: ButtonStyle; show_gallery: boolean; cover_treatment?: "original" | "dark" | "light" | "gray"; }
+export interface CatalogItem { id: string; title: string; description: string; price: string; image_url: string; button_label: string; button_url: string; }
 export interface FeatureConfig {
   lead_enabled: boolean;
   lead_title: string;
   lead_button: string;
+  lead_description?: string;
   campaign_enabled: boolean;
   campaign_title: string;
   campaign_text: string;
   campaign_cta: string;
   campaign_url: string;
   catalog_text: string;
+  catalog_items?: CatalogItem[];
+  layout?: LayoutConfig;
   testimonials_text: string;
   qr_label: string;
   show_badge: boolean;
