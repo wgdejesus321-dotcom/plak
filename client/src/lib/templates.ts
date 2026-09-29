@@ -1,7 +1,7 @@
 import type { BusinessForm } from "./types";
 
 export type TemplateCategory = "Gastronomia" | "Beleza" | "Serviços" | "Varejo" | "Criativo";
-export interface TemplatePreset { id: string; name: string; category: TemplateCategory; description: string; tone: string; form: BusinessForm; }
+export interface TemplatePreset { image?: string; id: string; name: string; category: TemplateCategory; description: string; tone: string; form: BusinessForm; }
 
 const base = (values: Partial<BusinessForm>): BusinessForm => ({
   name: "", slug: "", logo_url: "", tagline: "Olá! Como podemos ajudar?", google_review_url: "", whatsapp_number: "", whatsapp_message: "Olá! Vim pela página da marca.", instagram_url: "", website_url: "", address: "", maps_url: "", primary_color: "#0F766E", secondary_color: "#F2B84B", background_color: "#FBFAF6", background_image_url: "", standard_button_color: "#FFFFFF", custom_button_color: "#FFFFFF", seo_title: "", seo_description: "", seo_image_url: "", features: { lead_enabled: false, lead_title: "Fale com a gente", lead_button: "Enviar mensagem", campaign_enabled: false, campaign_title: "", campaign_text: "", campaign_cta: "Saiba mais", campaign_url: "", catalog_text: "", testimonials_text: "", qr_label: "PLAK", show_badge: true }, links: [], media: [], ...values,
