@@ -182,7 +182,7 @@
   }
   .editor-modern .editor-workspace {
     min-width: 0;
-    grid-template-columns: 220px minmax(0, 1fr) 320px;
+    grid-template-columns: 236px minmax(0, 1fr) 340px;
     grid-template-areas: "sidebar canvas properties";
   }
   .editor-modern .editor-sidebar { grid-area: sidebar; min-width: 0; }
@@ -202,7 +202,27 @@
 }
 
 @media (min-width: 1280px) {
-  .editor-modern .editor-workspace { grid-template-columns: 260px minmax(0, 1fr) 380px; }
+  .editor-modern .editor-workspace { grid-template-columns: 248px minmax(0, 1fr) 360px; }
+  .editor-modern .editor-sidebar { padding: 1rem; }
+  .editor-modern .editor-properties { padding: 1.25rem; }
+  .editor-modern .editor-canvas { padding: 1.25rem; }
+}
+
+.editor-modern .editor-canvas {
+  background-color: #e9eee7;
+  background-image: linear-gradient(rgba(19,38,45,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(19,38,45,.045) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.editor-modern .editor-sidebar,
+.editor-modern .editor-properties {
+  background: #101c22;
+}
+.editor-modern .editor-sidebar { border-right-color: rgba(255,255,255,.09); }
+.editor-modern .editor-properties { border-left-color: rgba(255,255,255,.09); }
+.editor-modern .editor-canvas > div:last-child { width: 100%; }
+.editor-modern .editor-canvas [style*="scale("] { will-change: transform; }
+@media (min-width: 1024px) {
+  .editor-modern .editor-sidebar, .editor-modern .editor-properties { min-height: 0; }
 }
 
 @media (max-width: 1023px) {
@@ -337,7 +357,7 @@
 }
 
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .editor-modern .editor-workspace { grid-template-columns: 205px minmax(280px, 1fr) 300px; }
+  .editor-modern .editor-workspace { grid-template-columns: 210px minmax(0, 1fr) 300px; }
   .editor-modern .editor-sidebar,
   .editor-modern .editor-properties { padding: 1rem; }
   .editor-modern .editor-canvas { padding: 1.25rem; }
@@ -369,4 +389,21 @@
 
 @media (prefers-reduced-motion: reduce) {
   .editor-modern *, .editor-modern *::before, .editor-modern *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Painel esquerdo recolhível: libera espaço para a prévia durante a edição. */
+.editor-modern .editor-workspace.editor-sidebar-collapsed {
+  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-areas: "canvas properties";
+}
+@media (min-width: 1280px) {
+  .editor-modern .editor-workspace.editor-sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+@media (max-width: 1023px) {
+  .editor-modern .editor-workspace.editor-sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "canvas" "properties";
+  }
 }
