@@ -25,7 +25,27 @@ export interface LayoutConfig {
   cover_position_y?: number;
   logo_offset_x?: number;
   logo_offset_y?: number;
+  logo_scale?: number;
+  cover_scale?: number;
+  title_color?: string;
+  tagline_color?: string;
+  font_family?: string;
+  title_font_size?: number;
+  tagline_font_size?: number;
   section_spacing?: "compact" | "comfortable" | "airy";
+  page_style?: "clean" | "editorial" | "glass" | "bold" | "minimal";
+  hero_layout?: "classic" | "immersive" | "split" | "compact";
+  button_size?: "compact" | "medium" | "large";
+  button_shadow?: boolean;
+  card_style?: "soft" | "solid" | "glass" | "flat";
+  gallery_layout?: "floating" | "masonry" | "grid" | "editorial";
+  gallery_radius?: number;
+  gallery_gap?: number;
+  gallery_background?: string;
+  section_title_color?: string;
+  body_text_color?: string;
+  accent_color?: string;
+  background_overlay?: number;
   section_order?: string[];
   hidden_sections?: string[];
 }
@@ -47,6 +67,7 @@ export interface CatalogItem {
   features?: string[];
   image_position_x?: number;
   image_position_y?: number;
+  image_scale?: number;
   file?: File;
 }
 
