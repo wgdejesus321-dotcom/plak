@@ -62,7 +62,7 @@ export function validateFile(file: File, kind: keyof typeof MAX_FILE_BYTES) {
 export function validateBusinessForm(form: BusinessForm) {
   const errors: Record<string, string> = {};
   if (form.name.trim().length < 2) errors.name = "Informe o nome do negócio.";
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(form.slug)) errors.slug = "Use letras minúsculas, números e hífens.";
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(form.slug)) errors.slug = "O endereço da página usa apenas letras minúsculas, números e hífens. Ele é gerado automaticamente pelo nome.";
   for (const [key, value] of Object.entries({
     primary_color: form.primary_color,
     secondary_color: form.secondary_color,
