@@ -154,3 +154,15 @@
 
 
 @media (max-width: 640px) { .editor-expanded-preview { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; top: auto; width: auto; min-height: 84px; align-items: flex-start; padding: 16px; font-size: 21px; border-radius: 20px; box-shadow: 0 24px 55px rgba(10,24,29,.45), 0 0 0 5px rgba(216,238,119,.1); } }
+
+
+@layer components {
+  /* The editor is intentionally dark; keep controls readable without changing the public page theme. */
+  .editor-modern aside .text-slate-900, .editor-modern aside .text-slate-800, .editor-modern aside .text-slate-700, .editor-modern aside .text-slate-600 { color: rgba(241,247,243,.86); }
+  .editor-modern aside .text-slate-500, .editor-modern aside .text-slate-400 { color: rgba(220,232,226,.55); }
+  .editor-modern aside .border-slate-200, .editor-modern aside .border-slate-100 { border-color: rgba(255,255,255,.12); }
+  .editor-modern aside .bg-white { background-color: rgba(255,255,255,.07); }
+  .editor-modern aside .bg-slate-50 { background-color: rgba(255,255,255,.06); }
+  .editor-modern aside .hover\:bg-slate-50:hover, .editor-modern aside .hover\:bg-slate-100:hover { background-color: rgba(255,255,255,.12); }
+  .editor-modern aside input[type="color"] { background: rgba(255,255,255,.08); }
+}

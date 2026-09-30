@@ -17,7 +17,7 @@ export async function listBusinesses() {
 
 export async function getBusinessBySlug(slug: string, publishedOnly = true) {
   const db = requireDb();
-  let query = db.from("businesses").select(`${businessColumns},business_links(id,label,url,kind,color,position),business_media(id,type,url,storage_path,alt,position)`).eq("slug", slug);
+  let query = db.from("businesses").select(`${businessColumns},business_links(id,label,url,kind,color,position),business_media(id,type,url,storage_path,alt,position,object_position_x,object_position_y,object_scale)`).eq("slug", slug);
   if (publishedOnly) query = query.eq("status", "published");
   const { data, error } = await query.maybeSingle();
   if (error) throw error;
@@ -30,7 +30,7 @@ export async function getBusinessBySlug(slug: string, publishedOnly = true) {
 }
 
 export async function getBusiness(id: string) {
-  const { data, error } = await requireDb().from("businesses").select(`${businessColumns},business_links(id,label,url,kind,color,position),business_media(id,type,url,storage_path,alt,position)`).eq("id", id).single();
+  const { data, error } = await requireDb().from("businesses").select(`${businessColumns},business_links(id,label,url,kind,color,position),business_media(id,type,url,storage_path,alt,position,object_position_x,object_position_y,object_scale)`).eq("id", id).single();
   if (error) throw error;
   return data as Business & { business_links?: BusinessLink[]; business_media?: BusinessMedia[] };
 }
@@ -78,7 +78,7 @@ export async function saveBusiness(rawForm: BusinessForm, id?: string) {
   const { error: mediaDeleteError } = await db.from("business_media").delete().eq("business_id", business.id);
   if (mediaDeleteError) throw mediaDeleteError;
   if (form.media.length) {
-    const { error } = await db.from("business_media").insert(form.media.map((media, position) => ({ business_id: business.id, type: media.type, url: media.url, storage_path: media.storage_path ?? null, alt: media.alt || "Foto do cliente", position })));
+    const { error } = await db.from("business_media").insert(form.media.map((media, position) => ({ business_id: business.id, type: media.type, url: media.url, storage_path: media.storage_path ?? null, alt: media.alt || "Foto do cliente", position, object_position_x: media.object_position_x ?? 50, object_position_y: media.object_position_y ?? 50, object_scale: media.object_scale ?? 1 })));
     if (error) throw error;
   }
   return business;

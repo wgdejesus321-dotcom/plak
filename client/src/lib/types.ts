@@ -7,7 +7,7 @@ export type AnalyticsSource = "instagram" | "whatsapp" | "google" | "placa" | "d
 export type DeviceType = "mobile" | "tablet" | "desktop";
 export type ProfilePosition = "top" | "cover" | "hidden";
 export type ProfileShape = "rounded" | "circle" | "square";
-export type ButtonStyle = "soft" | "pill" | "outline" | "glass";
+export type ButtonStyle = "soft" | "pill" | "outline" | "glass" | "rounded" | "square";
 
 export interface LayoutConfig {
   cover_enabled: boolean;
@@ -34,9 +34,12 @@ export interface LayoutConfig {
   tagline_font_size?: number;
   section_spacing?: "compact" | "comfortable" | "airy";
   page_style?: "clean" | "editorial" | "glass" | "bold" | "minimal";
+  background_effect?: "solid" | "soft-gradient" | "radial-glow";
   hero_layout?: "classic" | "immersive" | "split" | "compact";
   button_size?: "compact" | "medium" | "large";
   button_shadow?: boolean;
+  button_text_color?: string;
+  custom_button_text_color?: string;
   card_style?: "soft" | "solid" | "glass" | "flat";
   gallery_layout?: "floating" | "masonry" | "grid" | "editorial";
   gallery_radius?: number;
@@ -125,7 +128,7 @@ export interface FeatureConfig {
 export interface Profile { id: string; full_name: string | null; email: string | null; role: UserRole; access_status: AccessStatus; is_protected?: boolean; created_at: string; }
 export interface Business { id: string; name: string; slug: string; logo_url: string | null; tagline: string; google_review_url: string | null; whatsapp_number: string | null; whatsapp_message: string | null; instagram_url: string | null; website_url: string | null; address: string | null; maps_url: string | null; primary_color: string; secondary_color: string; background_color: string; background_image_url: string | null; standard_button_color: string; custom_button_color: string; seo_title: string | null; seo_description: string | null; seo_image_url: string | null; features: FeatureConfig; status: BusinessStatus; published_at: string | null; created_at: string; updated_at: string; created_by: string | null; }
 export interface BusinessLink { id?: string; business_id?: string; label: string; url: string; kind: LinkKind; color: string; position: number; }
-export interface BusinessMedia { id?: string; business_id?: string; type: MediaType; url: string; storage_path?: string | null; alt: string; position: number; file?: File; object_position_x?: number; object_position_y?: number; }
+export interface BusinessMedia { id?: string; business_id?: string; type: MediaType; url: string; storage_path?: string | null; alt: string; position: number; file?: File; object_position_x?: number; object_position_y?: number; object_scale?: number; }
 export interface BusinessBundle { business: Business; links: BusinessLink[]; media: BusinessMedia[]; }
 export interface AnalyticsEvent { business_id: string; event_type: "view" | "click" | "share"; target: string; source: AnalyticsSource; device_type: DeviceType; referrer?: string | null; }
 export interface AnalyticsSummary { views: number; clicks: number; shares: number; uniqueDays: number; devices: Record<DeviceType, number>; sources: Record<AnalyticsSource, number>; daily: { day: string; views: number }[]; topClicks: { target: string; count: number }[]; }
