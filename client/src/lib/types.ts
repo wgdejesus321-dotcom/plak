@@ -46,6 +46,10 @@ export interface LayoutConfig {
   body_text_color?: string;
   accent_color?: string;
   background_overlay?: number;
+  title_offset_x?: number;
+  title_offset_y?: number;
+  tagline_offset_x?: number;
+  tagline_offset_y?: number;
   section_order?: string[];
   hidden_sections?: string[];
 }
@@ -71,6 +75,31 @@ export interface CatalogItem {
   file?: File;
 }
 
+export type PageBlockType = "text" | "image" | "video" | "quote" | "offer" | "social" | "map" | "hours" | "faq" | "divider" | "booking";
+
+export interface PageBlock {
+  id: string;
+  type: PageBlockType;
+  title?: string;
+  text?: string;
+  url?: string;
+  image_url?: string;
+  button_label?: string;
+  button_url?: string;
+  items?: string[];
+  visible?: boolean;
+  align?: "left" | "center" | "right";
+  background?: string;
+  text_color?: string;
+  accent_color?: string;
+  radius?: number;
+  padding?: number;
+  image_position_x?: number;
+  image_position_y?: number;
+  image_scale?: number;
+  file?: File;
+}
+
 export interface FeatureConfig {
   lead_enabled: boolean;
   lead_title: string;
@@ -90,6 +119,7 @@ export interface FeatureConfig {
   qr_label: string;
   show_badge: boolean;
   layout?: LayoutConfig;
+  blocks?: PageBlock[];
 }
 
 export interface Profile { id: string; full_name: string | null; email: string | null; role: UserRole; access_status: AccessStatus; is_protected?: boolean; created_at: string; }
