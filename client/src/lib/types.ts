@@ -5,12 +5,51 @@ export type LinkKind = "site" | "email" | "phone" | "whatsapp" | "maps" | "other
 export type MediaType = "image" | "video";
 export type AnalyticsSource = "instagram" | "whatsapp" | "google" | "placa" | "direct" | "other";
 export type DeviceType = "mobile" | "tablet" | "desktop";
-
 export type ProfilePosition = "top" | "cover" | "hidden";
 export type ProfileShape = "rounded" | "circle" | "square";
 export type ButtonStyle = "soft" | "pill" | "outline" | "glass";
-export interface LayoutConfig { cover_enabled: boolean; profile_position: ProfilePosition; profile_shape: ProfileShape; text_align: "left" | "center"; button_style: ButtonStyle; show_gallery: boolean; cover_treatment?: "original" | "dark" | "light" | "gray"; logo_size?: "small" | "medium" | "large"; logo_shape?: "circle" | "rounded" | "square"; logo_fit?: "contain" | "cover"; cover_opacity?: number; }
-export interface CatalogItem { id: string; title: string; description: string; price: string; image_url: string; button_label: string; button_url: string; }
+
+export interface LayoutConfig {
+  cover_enabled: boolean;
+  profile_position: ProfilePosition;
+  profile_shape: ProfileShape;
+  text_align: "left" | "center";
+  button_style: ButtonStyle;
+  show_gallery: boolean;
+  cover_treatment?: "original" | "dark" | "light" | "gray";
+  logo_size?: "small" | "medium" | "large";
+  logo_shape?: "circle" | "rounded" | "square";
+  logo_fit?: "contain" | "cover";
+  cover_opacity?: number;
+  cover_position_x?: number;
+  cover_position_y?: number;
+  logo_offset_x?: number;
+  logo_offset_y?: number;
+  section_spacing?: "compact" | "comfortable" | "airy";
+  section_order?: string[];
+  hidden_sections?: string[];
+}
+
+export interface CatalogItem {
+  id: string;
+  item_type?: "product" | "service";
+  title: string;
+  description: string;
+  price: string;
+  original_price?: string;
+  category?: string;
+  badge?: string;
+  duration?: string;
+  image_url: string;
+  button_label: string;
+  button_url: string;
+  featured?: boolean;
+  features?: string[];
+  image_position_x?: number;
+  image_position_y?: number;
+  file?: File;
+}
+
 export interface FeatureConfig {
   lead_enabled: boolean;
   lead_title: string;
@@ -23,16 +62,19 @@ export interface FeatureConfig {
   campaign_url: string;
   catalog_text: string;
   catalog_items?: CatalogItem[];
-  layout?: LayoutConfig;
+  catalog_title?: string;
+  catalog_subtitle?: string;
   testimonials_text: string;
+  testimonials_title?: string;
   qr_label: string;
   show_badge: boolean;
+  layout?: LayoutConfig;
 }
 
 export interface Profile { id: string; full_name: string | null; email: string | null; role: UserRole; access_status: AccessStatus; is_protected?: boolean; created_at: string; }
 export interface Business { id: string; name: string; slug: string; logo_url: string | null; tagline: string; google_review_url: string | null; whatsapp_number: string | null; whatsapp_message: string | null; instagram_url: string | null; website_url: string | null; address: string | null; maps_url: string | null; primary_color: string; secondary_color: string; background_color: string; background_image_url: string | null; standard_button_color: string; custom_button_color: string; seo_title: string | null; seo_description: string | null; seo_image_url: string | null; features: FeatureConfig; status: BusinessStatus; published_at: string | null; created_at: string; updated_at: string; created_by: string | null; }
 export interface BusinessLink { id?: string; business_id?: string; label: string; url: string; kind: LinkKind; color: string; position: number; }
-export interface BusinessMedia { id?: string; business_id?: string; type: MediaType; url: string; storage_path?: string | null; alt: string; position: number; file?: File; }
+export interface BusinessMedia { id?: string; business_id?: string; type: MediaType; url: string; storage_path?: string | null; alt: string; position: number; file?: File; object_position_x?: number; object_position_y?: number; }
 export interface BusinessBundle { business: Business; links: BusinessLink[]; media: BusinessMedia[]; }
 export interface AnalyticsEvent { business_id: string; event_type: "view" | "click" | "share"; target: string; source: AnalyticsSource; device_type: DeviceType; referrer?: string | null; }
 export interface AnalyticsSummary { views: number; clicks: number; shares: number; uniqueDays: number; devices: Record<DeviceType, number>; sources: Record<AnalyticsSource, number>; daily: { day: string; views: number }[]; topClicks: { target: string; count: number }[]; }

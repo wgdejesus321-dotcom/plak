@@ -99,7 +99,7 @@ export async function deleteBusiness(id: string) {
   if (error) throw error;
 }
 
-export async function uploadAsset(file: File, businessId: string, kind: "logo" | "background" | "media") {
+export async function uploadAsset(file: File, businessId: string, kind: "logo" | "background" | "media" | "catalog") {
   const db = requireDb();
   const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-").slice(-100);
   const path = `${businessId}/${kind}/${crypto.randomUUID()}-${safe}`;
