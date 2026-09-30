@@ -174,3 +174,199 @@
   .editor-modern aside input[type="color"] { background: rgba(255,255,255,.08); }
   .editor-modern aside input[type="range"] { accent-color: #d8ee77; }
 }
+
+/* Responsive layout isolated to the client page editor. */
+@layer components {
+  .editor-modern {
+    min-width: 0;
+  }
+  .editor-modern .editor-workspace {
+    min-width: 0;
+    grid-template-columns: 220px minmax(0, 1fr) 320px;
+    grid-template-areas: "sidebar canvas properties";
+  }
+  .editor-modern .editor-sidebar { grid-area: sidebar; min-width: 0; }
+  .editor-modern .editor-canvas { grid-area: canvas; min-width: 0; }
+  .editor-modern .editor-properties { grid-area: properties; min-width: 0; }
+  .editor-modern .editor-properties input:not([type="checkbox"]):not([type="color"]):not([type="range"]),
+  .editor-modern .editor-properties select,
+  .editor-modern .editor-properties textarea {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .editor-modern .editor-properties input[type="range"] { width: 100%; accent-color: #d8ee77; }
+  .editor-modern .editor-properties details { padding-bottom: 1rem; }
+  .editor-modern .editor-properties summary { min-height: 44px; gap: .75rem; }
+  .editor-modern .editor-properties details > div { padding-top: .35rem; }
+  .editor-modern button { -webkit-tap-highlight-color: transparent; }
+}
+
+@media (min-width: 1280px) {
+  .editor-modern .editor-workspace { grid-template-columns: 260px minmax(0, 1fr) 380px; }
+}
+
+@media (max-width: 1023px) {
+  .editor-modern {
+    height: auto !important;
+    min-height: calc(100dvh - 80px);
+    margin: 0 -1rem;
+    padding: 0 0 1rem;
+    border-radius: 0;
+    overflow: visible !important;
+  }
+  .editor-modern > header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    flex-wrap: wrap;
+    gap: .65rem;
+    padding: .75rem 1rem;
+  }
+  .editor-modern > header > div { min-width: 0; }
+  .editor-modern > header > div:last-child { margin-left: auto; }
+  .editor-modern > header button { min-height: 40px; }
+  .editor-modern .editor-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "canvas" "sidebar" "properties";
+    overflow: visible;
+  }
+  .editor-modern .editor-canvas {
+    min-height: 560px;
+    max-height: none;
+    overflow: visible;
+    padding: 1rem .75rem 1.5rem;
+  }
+  .editor-modern .editor-canvas > div:last-child { padding-top: .5rem; }
+  .editor-modern .editor-canvas .sticky { position: relative; top: auto; flex-wrap: wrap; }
+  .editor-modern .editor-canvas .sticky > span { font-size: 9px; }
+  .editor-modern .editor-canvas .rounded-\[34px\] { border-radius: 26px; }
+  .editor-modern .editor-canvas [style*="scale("] { transform-origin: top center !important; }
+  .editor-modern .editor-sidebar,
+  .editor-modern .editor-properties {
+    max-height: none;
+    overflow: visible;
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,.12);
+    padding: 1.25rem;
+  }
+  .editor-modern .editor-sidebar .grid.grid-cols-2 { gap: .6rem; }
+  .editor-modern .editor-sidebar .grid.grid-cols-2 > button { min-height: 68px; }
+  .editor-modern .editor-properties { padding-bottom: max(2rem, env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 640px) {
+  .editor-modern > header { align-items: center; }
+  .editor-modern > header > div:first-child { flex: 1 1 45%; }
+  .editor-modern > header > div:nth-child(2) { order: 3; width: 100%; justify-content: space-between; }
+  .editor-modern > header > div:last-child { gap: .4rem; }
+  .editor-modern > header > div:last-child button { padding-left: .7rem; padding-right: .7rem; font-size: 11px; }
+  .editor-modern .editor-canvas { min-height: 500px; }
+  .editor-modern .editor-canvas > div:last-child { width: 100%; }
+  .editor-modern .editor-canvas .rounded-\[34px\] { border-width: 5px; border-radius: 24px; }
+  .editor-modern .editor-sidebar,
+  .editor-modern .editor-properties { padding: 1rem; }
+  .editor-modern .editor-properties .grid.grid-cols-2 { gap: .65rem; }
+  .editor-modern .editor-properties input:not([type="checkbox"]):not([type="color"]):not([type="range"]),
+  .editor-modern .editor-properties select { min-height: 44px; }
+  .editor-modern .editor-properties textarea { min-height: 96px; }
+}
+
+/* Refinamento visual e ergonomia do editor de clientes (escopo isolado). */
+@layer components {
+  .editor-modern {
+    color-scheme: dark;
+    background: #101c22;
+    border: 1px solid rgba(220, 238, 228, .09);
+    border-radius: 24px;
+    box-shadow: 0 24px 70px rgba(8, 20, 25, .18);
+    overscroll-behavior: contain;
+  }
+  .editor-modern .editor-workspace { gap: 0; }
+  .editor-modern .editor-sidebar,
+  .editor-modern .editor-properties { scrollbar-width: thin; scrollbar-color: rgba(216,238,119,.3) transparent; }
+  .editor-modern .editor-sidebar::-webkit-scrollbar,
+  .editor-modern .editor-properties::-webkit-scrollbar,
+  .editor-modern .editor-canvas::-webkit-scrollbar { width: 7px; height: 7px; }
+  .editor-modern .editor-sidebar::-webkit-scrollbar-thumb,
+  .editor-modern .editor-properties::-webkit-scrollbar-thumb,
+  .editor-modern .editor-canvas::-webkit-scrollbar-thumb { background: rgba(216,238,119,.28); border-radius: 999px; }
+  .editor-modern .editor-sidebar,
+  .editor-modern .editor-properties { scrollbar-gutter: stable; }
+  .editor-modern .editor-properties details,
+  .editor-modern .editor-sidebar details { border-radius: 16px; }
+  .editor-modern .editor-properties summary,
+  .editor-modern .editor-sidebar summary { padding: .75rem .8rem; border-radius: 12px; cursor: pointer; transition: background .18s ease; }
+  .editor-modern .editor-properties summary:hover,
+  .editor-modern .editor-sidebar summary:hover { background: rgba(255,255,255,.055); }
+  .editor-modern .editor-properties input:not([type="checkbox"]):not([type="color"]):not([type="range"]),
+  .editor-modern .editor-properties select,
+  .editor-modern .editor-properties textarea,
+  .editor-modern .editor-sidebar input:not([type="checkbox"]):not([type="color"]):not([type="range"]),
+  .editor-modern .editor-sidebar select,
+  .editor-modern .editor-sidebar textarea {
+    border-radius: 12px;
+    border-color: rgba(220,232,226,.16);
+    background-color: rgba(5,14,18,.32);
+    color: #f1f7f3;
+    transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+  }
+  .editor-modern .editor-properties input::placeholder,
+  .editor-modern .editor-properties textarea::placeholder,
+  .editor-modern .editor-sidebar input::placeholder,
+  .editor-modern .editor-sidebar textarea::placeholder { color: rgba(220,232,226,.42); }
+  .editor-modern .editor-properties input:focus-visible,
+  .editor-modern .editor-properties select:focus-visible,
+  .editor-modern .editor-properties textarea:focus-visible,
+  .editor-modern .editor-sidebar input:focus-visible,
+  .editor-modern .editor-sidebar select:focus-visible,
+  .editor-modern .editor-sidebar textarea:focus-visible,
+  .editor-modern button:focus-visible,
+  .editor-modern a:focus-visible { outline: 2px solid #d8ee77; outline-offset: 2px; }
+  .editor-modern .editor-properties input:focus,
+  .editor-modern .editor-properties select:focus,
+  .editor-modern .editor-properties textarea:focus,
+  .editor-modern .editor-sidebar input:focus,
+  .editor-modern .editor-sidebar select:focus,
+  .editor-modern .editor-sidebar textarea:focus { border-color: rgba(216,238,119,.7); box-shadow: 0 0 0 3px rgba(216,238,119,.09); }
+  .editor-modern button { touch-action: manipulation; }
+  .editor-modern .editor-sidebar button,
+  .editor-modern .editor-properties button { transition: background-color .16s ease, border-color .16s ease, color .16s ease, transform .16s ease; }
+  .editor-modern .editor-canvas { overscroll-behavior: contain; }
+  .editor-modern .editor-canvas > div:last-child { margin-inline: auto; }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .editor-modern .editor-workspace { grid-template-columns: 205px minmax(280px, 1fr) 300px; }
+  .editor-modern .editor-sidebar,
+  .editor-modern .editor-properties { padding: 1rem; }
+  .editor-modern .editor-canvas { padding: 1.25rem; }
+}
+
+@media (max-width: 1023px) {
+  .editor-modern { border-radius: 0 0 20px 20px; border-left: 0; border-right: 0; box-shadow: none; }
+  .editor-modern .editor-sidebar,
+  .editor-modern .editor-properties { scrollbar-gutter: auto; }
+  .editor-modern .editor-sidebar > *,
+  .editor-modern .editor-properties > * { min-width: 0; }
+}
+
+@media (max-width: 640px) {
+  .editor-modern { margin-inline: -1rem; width: calc(100% + 2rem); }
+  .editor-modern > header { padding-top: max(.75rem, env(safe-area-inset-top)); }
+  .editor-modern .editor-canvas { min-height: 0; }
+  .editor-modern .editor-canvas .sticky { gap: .4rem; }
+  .editor-modern .editor-canvas .sticky button { min-height: 38px; min-width: 48px; }
+  .editor-modern .editor-properties .grid,
+  .editor-modern .editor-sidebar .grid { min-width: 0; }
+  .editor-modern .editor-properties button,
+  .editor-modern .editor-sidebar button { min-height: 40px; }
+  .editor-modern .editor-properties input[type="color"],
+  .editor-modern .editor-sidebar input[type="color"] { min-height: 44px; padding: 3px; }
+  .editor-modern .editor-properties input[type="range"],
+  .editor-modern .editor-sidebar input[type="range"] { min-height: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-modern *, .editor-modern *::before, .editor-modern *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
