@@ -82,3 +82,6 @@ Depois de alterar o schema, crie uma nova migration em `supabase/migrations/` e 
 ## Limitações deliberadas
 
 Não há segredos reais no repositório. Sem Supabase configurado, as telas continuam navegáveis e exibem uma mensagem de configuração; não há clientes hardcoded nem fake auth. O adapter R2 server-side está documentado como extensão opcional porque segredos R2 não podem ser expostos em uma aplicação estática.
+
+## Editor visual revisado
+A plataforma agora possui um workspace visual para edição das páginas, com preview central, propriedades contextuais, edição inline, undo/redo, ajustes de capa/logo e catálogo comercial de produtos e serviços.
