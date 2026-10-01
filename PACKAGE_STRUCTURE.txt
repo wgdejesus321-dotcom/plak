@@ -1,0 +1,2 @@
+PLAK_PACKAGE_ROOT=plak-platform
+This archive must be extracted with the plak-platform directory preserved.
