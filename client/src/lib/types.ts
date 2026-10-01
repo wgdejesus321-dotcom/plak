@@ -11,6 +11,7 @@ export type ButtonStyle = "soft" | "pill" | "outline" | "glass" | "rounded" | "s
 
 export interface LayoutConfig {
   cover_enabled: boolean;
+  cover_image_url?: string;
   profile_position: ProfilePosition;
   profile_shape: ProfileShape;
   text_align: "left" | "center";
