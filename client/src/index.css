@@ -174,3 +174,149 @@
   .editor-modern aside input[type="color"] { background: rgba(255,255,255,.08); }
   .editor-modern aside input[type="range"] { accent-color: #d8ee77; }
 }
+
+/* PLAK Visual Studio — interface inspirada em editores visuais modernos */
+.editor-modern {
+  margin: -1.5rem -1rem !important;
+  padding: 0 !important;
+  max-width: none !important;
+  border-radius: 0 !important;
+  background: #f1f2f6 !important;
+  color: #1f2937 !important;
+  box-shadow: none !important;
+}
+.editor-modern > header {
+  min-height: 64px;
+  padding: 10px 20px !important;
+  background: linear-gradient(105deg, #6d28d9 0%, #5145cd 48%, #2563eb 100%) !important;
+  border-bottom: 0 !important;
+  box-shadow: 0 2px 10px rgba(45, 35, 110, .18);
+}
+.editor-modern > header h1 { color: #fff !important; font-size: 14px !important; }
+.editor-modern > header .text-lime-300 { color: #e9ddff !important; }
+.editor-modern > header button { transition: transform .16s ease, box-shadow .16s ease; }
+.editor-modern > header button:hover { transform: translateY(-1px); }
+.editor-modern > header button:last-child { background: #fff !important; color: #4f46a5 !important; border: 1px solid rgba(255,255,255,.65) !important; box-shadow: 0 3px 10px rgba(20,20,60,.12); }
+.editor-modern > header button:nth-last-child(2) { color: #4f46a5 !important; }
+.editor-modern > div.grid {
+  grid-template-columns: 236px minmax(320px, 1fr) 320px !important;
+  min-height: 0;
+  background: #f1f2f6;
+}
+.editor-modern > div.grid > aside {
+  background: #fff !important;
+  color: #253047 !important;
+  border-color: #e5e7ef !important;
+  padding: 18px 14px !important;
+  box-shadow: 0 0 0 1px rgba(35,45,80,.015);
+}
+.editor-modern > div.grid > aside:first-child { border-right: 1px solid #e5e7ef !important; }
+.editor-modern > div.grid > aside:last-child { border-left: 1px solid #e5e7ef !important; }
+.editor-modern > div.grid > aside p.uppercase { color: #8a91a5 !important; letter-spacing: .12em !important; }
+.editor-modern > div.grid > aside .text-white { color: #273149 !important; }
+.editor-modern > div.grid > aside .text-white\/75,
+.editor-modern > div.grid > aside .text-white\/70,
+.editor-modern > div.grid > aside .text-white\/60 { color: #5f6880 !important; }
+.editor-modern > div.grid > aside .text-white\/55,
+.editor-modern > div.grid > aside .text-white\/45,
+.editor-modern > div.grid > aside .text-white\/40 { color: #8991a5 !important; }
+.editor-modern > div.grid > aside .border-white\/10 { border-color: #e6e8f0 !important; }
+.editor-modern > div.grid > aside .bg-white\/\[\.06\],
+.editor-modern > div.grid > aside .bg-white\/\[\.08\],
+.editor-modern > div.grid > aside .bg-white\/10 { background: #f7f7fb !important; }
+.editor-modern > div.grid > aside button { border-radius: 12px; }
+.editor-modern > div.grid > aside:first-child .grid.grid-cols-2 > button {
+  min-height: 74px !important;
+  border: 1px solid #e8e8f2 !important;
+  background: #fff !important;
+  color: #59627a !important;
+  box-shadow: 0 2px 5px rgba(30,35,80,.035);
+}
+.editor-modern > div.grid > aside:first-child .grid.grid-cols-2 > button svg { color: #6d5bd0 !important; }
+.editor-modern > div.grid > aside:first-child .grid.grid-cols-2 > button[class*="border-lime"] {
+  border-color: #7c63e8 !important;
+  background: #f0edff !important;
+  color: #4f3bb8 !important;
+  box-shadow: 0 4px 12px rgba(109,40,217,.10) !important;
+}
+.editor-modern > div.grid > aside:first-child .grid.grid-cols-2 > button[class*="border-lime"] svg { color: #6246c7 !important; }
+.editor-modern > div.grid > aside:first-child .mt-5.rounded-2xl {
+  background: linear-gradient(135deg,#f2efff,#edf4ff) !important;
+  border: 1px solid #e3defc;
+  color: #5145a5 !important;
+}
+.editor-modern > div.grid > aside:first-child .mt-5.rounded-2xl p { color: #5c5e83 !important; }
+.editor-modern > div.grid > main {
+  background-color: #f1f2f6 !important;
+  background-image: radial-gradient(#d9dce7 1px, transparent 1px) !important;
+  background-size: 18px 18px !important;
+  padding: 22px !important;
+}
+.editor-modern > div.grid > main .sticky { margin-bottom: 18px !important; }
+.editor-modern > div.grid > main .sticky button {
+  border: 1px solid #dedfeb !important;
+  background: #fff !important;
+  color: #606981 !important;
+  box-shadow: 0 2px 5px rgba(35,40,80,.04);
+}
+.editor-modern > div.grid > main .sticky button[class*="border-lime"] {
+  background: #6d5bd0 !important;
+  border-color: #6d5bd0 !important;
+  color: #fff !important;
+}
+.editor-modern > div.grid > main .sticky span {
+  background: #fff !important;
+  border-color: #e1e3ed !important;
+  color: #68718a !important;
+}
+.editor-modern > div.grid > main > div:last-child > div {
+  border-color: #d5d8e3 !important;
+  box-shadow: 0 18px 50px rgba(40,44,80,.16) !important;
+}
+.editor-modern > div.grid > aside:last-child .text-lime-300,
+.editor-modern > div.grid > aside:last-child .text-lime-200 { color: #6d5bd0 !important; }
+.editor-modern > div.grid > aside:last-child .text-slate-900,
+.editor-modern > div.grid > aside:last-child .text-slate-800,
+.editor-modern > div.grid > aside:last-child .text-slate-700,
+.editor-modern > div.grid > aside:last-child .text-slate-600 { color: #35405a !important; }
+.editor-modern > div.grid > aside:last-child .text-slate-500,
+.editor-modern > div.grid > aside:last-child .text-slate-400 { color: #737c93 !important; }
+.editor-modern > div.grid > aside:last-child .border-slate-300,
+.editor-modern > div.grid > aside:last-child .border-slate-200,
+.editor-modern > div.grid > aside:last-child .border-slate-100 { border-color: #e3e5ed !important; }
+.editor-modern > div.grid > aside:last-child .bg-white { background: #fff !important; }
+.editor-modern > div.grid > aside:last-child .bg-slate-50,
+.editor-modern > div.grid > aside:last-child .bg-slate-100 { background: #f7f8fc !important; }
+.editor-modern > div.grid > aside:last-child .bg-lime-50 { background: #f1efff !important; }
+.editor-modern > div.grid > aside:last-child input:not([type="checkbox"]):not([type="color"]):not([type="range"]),
+.editor-modern > div.grid > aside:last-child textarea,
+.editor-modern > div.grid > aside:last-child select {
+  color: #263149 !important;
+  background: #fff !important;
+  border-color: #dfe2ec !important;
+  box-shadow: inset 0 1px 2px rgba(25,30,70,.025);
+}
+.editor-modern > div.grid > aside:last-child input::placeholder,
+.editor-modern > div.grid > aside:last-child textarea::placeholder { color: #a0a6b7 !important; }
+.editor-modern > div.grid > aside:last-child input:focus,
+.editor-modern > div.grid > aside:last-child textarea:focus,
+.editor-modern > div.grid > aside:last-child select:focus { border-color: #8875e5 !important; box-shadow: 0 0 0 3px rgba(124,99,232,.12) !important; }
+.editor-modern > div.grid > aside:last-child input[type="range"] { accent-color: #6d5bd0 !important; }
+.editor-modern > div.grid > aside:last-child input[type="color"] { background: #fff !important; border-color: #e3e5ed !important; }
+.editor-modern > div.grid > aside:last-child .bg-slate-900 { background: #6352c7 !important; color: #fff !important; }
+.editor-modern > div.grid > aside:last-child .text-red-500,
+.editor-modern > div.grid > aside:last-child .text-red-600 { color: #d1435b !important; }
+.editor-modern > div.grid > aside:last-child .border-red-200 { border-color: #f3cbd2 !important; }
+.editor-modern .editor-live-field { background: #f1efff !important; color: #5947b7 !important; border-color: #d9d1ff !important; }
+@media (max-width: 1100px) {
+  .editor-modern > div.grid { grid-template-columns: 190px minmax(260px,1fr) 285px !important; }
+  .editor-modern > div.grid > aside { padding: 12px 10px !important; }
+}
+@media (max-width: 800px) {
+  .editor-modern { height: auto !important; min-height: calc(100vh - 64px); overflow: visible !important; }
+  .editor-modern > div.grid { grid-template-columns: 1fr !important; overflow: visible !important; }
+  .editor-modern > div.grid > aside:first-child { order: 1; max-height: none; border-right: 0 !important; border-bottom: 1px solid #e5e7ef; }
+  .editor-modern > div.grid > main { order: 2; min-height: 680px; }
+  .editor-modern > div.grid > aside:last-child { order: 3; max-height: none; border-left: 0 !important; border-top: 1px solid #e5e7ef; }
+  .editor-modern > header { flex-wrap: wrap; gap: 10px; }
+}
