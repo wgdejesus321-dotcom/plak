@@ -12,7 +12,7 @@
     "railway:health": "node -e \"fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/api/health').then(r=>{if(!r.ok)process.exit(1);console.log('healthy')}).catch(()=>process.exit(1))\"",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
-    "test": "vitest run --root . server/env.test.ts",
+    "test": "vitest run --root .",
     "format": "prettier --write ."
   },
   "dependencies": {
