@@ -1,17 +1,23 @@
-import { Radio } from "lucide-react";
-
 export function BrandLogo({ inverse = false, compact = false }: { inverse?: boolean; compact?: boolean }) {
-  const ink = inverse ? "text-white" : "text-[#16262e]";
-  const line = inverse ? "border-white" : "border-[#16262e]";
+  const mark = inverse ? "/plak-mark-light.png" : "/plak-mark.png";
+  const wordmark = inverse ? "/plak-wordmark-light.png" : "/plak-wordmark.png";
+
   return (
-    <div className={`flex items-center gap-3 ${ink}`} aria-label="PLAK">
-      <span className={`plak-mark relative grid h-10 w-10 place-items-center border-2 ${line}`}>
-        <span className={`absolute -left-1.5 -top-1.5 h-4 w-4 border-l-2 border-t-2 ${line}`} />
-        <span className={`absolute -bottom-1.5 -right-1.5 h-4 w-4 border-b-2 border-r-2 ${line}`} />
-        <span className={`font-display text-[28px] font-black leading-none ${ink}`}>P</span>
-        <Radio className={`absolute right-0.5 top-0.5 h-3 w-3 ${inverse ? "text-[#d8ee77]" : "text-[#8da934]"}`} strokeWidth={2.5} />
-      </span>
-      {!compact && <span className="font-display text-[20px] font-black tracking-[.14em]">PLAK</span>}
+    <div className="inline-flex items-center gap-2.5" aria-label="PLAK" role="img">
+      <img
+        src={mark}
+        alt=""
+        aria-hidden="true"
+        className={compact ? "h-9 w-9 object-contain" : "h-10 w-10 object-contain"}
+      />
+      {!compact && (
+        <img
+          src={wordmark}
+          alt=""
+          aria-hidden="true"
+          className="h-[17px] w-auto object-contain sm:h-[19px]"
+        />
+      )}
     </div>
   );
 }
