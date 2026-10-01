@@ -190,3 +190,22 @@ export async function duplicateBusiness(id: string) {
   const copy: BusinessForm = { name: `${source.name} (cópia)`, slug: `${source.slug}-copia`, logo_url: source.logo_url || "", tagline: source.tagline, google_review_url: source.google_review_url || "", whatsapp_number: source.whatsapp_number || "", whatsapp_message: source.whatsapp_message || "", instagram_url: source.instagram_url || "", website_url: source.website_url || "", address: source.address || "", maps_url: source.maps_url || "", primary_color: source.primary_color, secondary_color: source.secondary_color, background_color: source.background_color, background_image_url: source.background_image_url || "", standard_button_color: source.standard_button_color, custom_button_color: source.custom_button_color, seo_title: source.seo_title || "", seo_description: source.seo_description || "", seo_image_url: source.seo_image_url || "", features: source.features, links: (source.business_links || []).map(({ id: _id, business_id: _businessId, ...link }) => link), media: (source.business_media || []).map(({ id: _id, business_id: _businessId, ...media }) => media) };
   return saveBusiness(copy);
 }
+
+export async function getStudioProject(id: string) {
+  const db = requireDb();
+  const { data, error } = await db.from("studio_projects").select("id,name,document,updated_at").eq("id", id).single();
+  if (error) throw error;
+  return data as { id: string; name: string; document: Record<string, unknown>; updated_at: string };
+}
+
+export async function saveStudioProject(document: Record<string, unknown>, id?: string) {
+  const db = requireDb();
+  const { data: auth } = await db.auth.getUser();
+  if (!auth.user) throw new Error("Faça login para salvar projetos do Studio.");
+  const name = typeof document.name === "string" && document.name.trim() ? document.name.trim() : "Meu projeto";
+  const result = id
+    ? await db.from("studio_projects").update({ name, document }).eq("id", id).select("id,name,document,updated_at").single()
+    : await db.from("studio_projects").insert({ owner_id: auth.user.id, name, document }).select("id,name,document,updated_at").single();
+  if (result.error) throw result.error;
+  return result.data as { id: string; name: string; document: Record<string, unknown>; updated_at: string };
+}
