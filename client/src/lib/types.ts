@@ -123,6 +123,7 @@ export interface FeatureConfig {
   show_badge: boolean;
   layout?: LayoutConfig;
   blocks?: PageBlock[];
+  canvas_objects?: Array<{ id:string; type:"text"|"image"|"button"|"shape"; x:number; y:number; width:number; height:number; text?:string; url?:string; href?:string; color?:string; background?:string; fontSize?:number; radius?:number; alt?:string; file?:File }>;
 }
 
 export interface Profile { id: string; full_name: string | null; email: string | null; role: UserRole; access_status: AccessStatus; is_protected?: boolean; created_at: string; }
