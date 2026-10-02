@@ -4,8 +4,6 @@ import { Link, useRoute } from "wouter";
 import { createLead, getBusinessBySlug, trackEvent } from "@/lib/data";
 import type { AnalyticsSource, BusinessBundle, BusinessLink, DeviceType, PageBlock } from "@/lib/types";
 import { normalizeLink } from "@/lib/validation";
-import FreePageRenderer from "./FreePageRenderer";
-import { documentFromBlocks } from "./freeCanvasModel";
 
 function hrefFor(link: BusinessLink) { return normalizeLink(link.kind, link.url); }
 function source(): AnalyticsSource { const value = new URLSearchParams(window.location.search).get("src")?.toLowerCase(); return ["instagram", "whatsapp", "google", "placa", "direct", "other"].includes(value ?? "") ? value as AnalyticsSource : "direct"; }
@@ -62,10 +60,6 @@ export default function PublicPage() {
     } catch { /* cancelamento nativo não deve poluir a experiência */ }
   };
   const click = (target: string, sourceName: AnalyticsSource) => void trackEvent({ business_id: business.id, event_type: "click", target, source: sourceName, device_type: device() });
-  if (features.blocks?.length) {
-    const freeDocument = documentFromBlocks(features.blocks, business.name, business.tagline);
-    return <FreePageRenderer business={business} links={links} elements={freeDocument.elements} layout={layout} onClick={(target) => click(target, "other")} />;
-  }
   const renderPageBlock = (block: PageBlock) => {
     if (block.visible === false) return null;
     const blockStyle: React.CSSProperties = { textAlign: block.align || "left", background: block.background || "transparent", color: block.text_color || layout.body_text_color || layout.tagline_color || "#64748b", borderRadius: block.radius ?? 24, padding: block.padding ?? 18 };

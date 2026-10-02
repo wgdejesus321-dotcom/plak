@@ -82,7 +82,7 @@ export type PageBlockType = "text" | "image" | "video" | "quote" | "offer" | "so
 
 export interface PageBlock {
   id: string;
-  type: PageBlockType | "heading" | "button" | "logo" | "shape";
+  type: PageBlockType;
   title?: string;
   text?: string;
   url?: string;
@@ -100,20 +100,6 @@ export interface PageBlock {
   image_position_x?: number;
   image_position_y?: number;
   image_scale?: number;
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  rotation?: number;
-  zIndex?: number;
-  locked?: boolean;
-  opacity?: number;
-  fontSize?: number;
-  fontFamily?: string;
-  fontWeight?: number;
-  borderColor?: string;
-  borderWidth?: number;
-  objectFit?: "cover" | "contain";
   file?: File;
 }
 
