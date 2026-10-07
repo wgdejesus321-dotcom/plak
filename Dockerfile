@@ -12,18 +12,15 @@ COPY patches ./patches
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-
-# --- ADICIONE ESTAS LINHAS AQUI ---
+# Public frontend settings only; never add a service-role/secret key here.
 ARG VITE_SUPABASE_URL
-ARG VITE_SUPABASE_ANON_KEY
 ARG VITE_SUPABASE_PUBLISHABLE_KEY
-
+ARG VITE_SUPABASE_ANON_KEY
 ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
-# ----------------------------------
-
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 RUN pnpm build
+
 FROM node:20-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production

@@ -1,9 +1,15 @@
+# PLAK Studio — criador e gerenciador de BioSites
 
+Plataforma para uma agência criar, revisar, publicar e entregar BioSites empresariais. Leia `docs/PLAK_SAAS.md` para arquitetura, fluxo, migrations, testes executados e limites.
 
-## Editor livre PLAK Studio
+```sh
+pnpm install --frozen-lockfile
+pnpm check
+pnpm test
+pnpm build
+pnpm dev
+```
 
-O editor livre está disponível em `/admin/studio`. Os painéis laterais podem ser recolhidos: o painel esquerdo fica acessível por uma seta flutuante na borda e essa preferência é preservada no navegador. O painel de propriedades também pode ser recolhido para ampliar o canvas.
+Requer as migrations Supabase 0001–0006 (0007 é opcional) e uma conta administradora aprovada.
 
-A persistência remota do documento usa a migration `supabase/migrations/0005_studio_projects.sql` e a tabela `studio_projects`, protegida por RLS para administradores autenticados. Sem Supabase configurado, o editor informa claramente que está salvando neste navegador e usa o fallback local para permitir trabalho offline sem simular sucesso remoto. PNG, JPEG e `.plak.json` podem ser exportados diretamente pelo topo do editor.
-
-Consulte `CHANGELOG_EDITOR_PROFISSIONAL.md` para o escopo, testes executados e limitações verificadas.
+O editor livre `/admin/studio` e o editor de clientes `/admin/client/:id` continuam disponíveis. Deploy: `docs/DEPLOYMENT.md` e `DEPLOY_RAILWAY.md`.
