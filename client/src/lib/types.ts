@@ -55,6 +55,7 @@ export interface LayoutConfig {
   tagline_offset_y?: number;
   section_order?: string[];
   hidden_sections?: string[];
+  entrance?: "soft" | "none";
 }
 
 export interface CatalogItem {
@@ -78,11 +79,12 @@ export interface CatalogItem {
   file?: File;
 }
 
-export type PageBlockType = "text" | "image" | "video" | "quote" | "offer" | "social" | "map" | "hours" | "faq" | "divider" | "booking";
+export type PageBlockType = "text" | "image" | "video" | "quote" | "offer" | "social" | "map" | "hours" | "faq" | "divider" | "booking" | "list";
 
 export interface PageBlock {
   id: string;
   type: PageBlockType;
+  eyebrow?: string;
   title?: string;
   text?: string;
   url?: string;
@@ -103,7 +105,23 @@ export interface PageBlock {
   file?: File;
 }
 
+export type SegmentId = "restaurant" | "barbershop" | "clinic" | "store" | "realestate" | "professional";
+export type WorkflowStage = "editing" | "review";
+export type PlanId = "basic" | "premium" | "agency";
+
+/** Product metadata stored in businesses.features; no database migration is required. */
+export interface BioSiteMeta {
+  segment?: SegmentId;
+  template_id?: string;
+  workflow?: WorkflowStage;
+  plan?: PlanId;
+  custom_domain?: string;
+  domain_status?: "pending" | "active";
+  generated_by?: "rules" | "llm" | "manual";
+}
+
 export interface FeatureConfig {
+  meta?: BioSiteMeta;
   lead_enabled: boolean;
   lead_title: string;
   lead_button: string;

@@ -4,12 +4,14 @@ import { Link, useLocation, useRoute } from "wouter";
 import { AdminShell } from "@/components/AdminShell";
 import "./ClientEditor.css";
 import { getBusiness, saveBusiness, uploadAsset } from "@/lib/data";
+import { BlockLibrary } from "@/components/BlockLibrary";
+import { LivePreview } from "@/components/LivePreview";
 import type { BusinessForm, BusinessMedia, LinkKind } from "@/lib/types";
 import { normalizeBusinessForm, normalizeInstagram, normalizeSlug, validateBusinessForm, validateFile } from "@/lib/validation";
 
 const baseLayout = { section_order:["actions","campaign","catalog","testimonials","lead","gallery","address"], hidden_sections:[], cover_enabled:true, profile_position:"cover", profile_shape:"circle", text_align:"center", button_style:"soft", show_gallery:true, cover_treatment:"light", logo_size:"medium", logo_shape:"circle", logo_fit:"contain", cover_opacity:35, cover_position_x:50, cover_position_y:50, logo_offset_x:0, logo_offset_y:0, logo_scale:1, cover_scale:100, title_color:"#17231e", tagline_color:"#65736b", font_family:"Inter", title_font_size:30, tagline_font_size:14, section_spacing:"comfortable", page_style:"clean", background_effect:"solid", hero_layout:"classic", button_size:"medium", button_shadow:true, button_text_color:"#263b3a", custom_button_text_color:"#FFFFFF", card_style:"soft", gallery_layout:"floating", gallery_radius:22, gallery_gap:12, gallery_background:"transparent", section_title_color:"#253d3e", body_text_color:"#718078", accent_color:"#91a08f", background_overlay:35 } as const;
 const empty: BusinessForm = { name:"", slug:"", logo_url:"", tagline:"Olá! Como podemos ajudar?", google_review_url:"", whatsapp_number:"", whatsapp_message:"", instagram_url:"", website_url:"", address:"", maps_url:"", primary_color:"#66754B", secondary_color:"#C6B887", background_color:"#F5F4EC", background_image_url:"", standard_button_color:"#FFFFFF", custom_button_color:"#66754B", seo_title:"", seo_description:"", seo_image_url:"", features:{ layout:{...baseLayout}, lead_enabled:false, lead_title:"Fale com a gente", lead_button:"Enviar mensagem", campaign_enabled:false, campaign_title:"", campaign_text:"", campaign_cta:"Saiba mais", campaign_url:"", catalog_text:"", catalog_title:"Produtos e serviços", catalog_subtitle:"Veja nossas principais opções", testimonials_text:"", testimonials_title:"O que nossos clientes dizem", qr_label:"PLAK", show_badge:true, catalog_items:[] }, links:[], media:[] };
-type Panel = "design"|"identity"|"images"|"actions"|"elements"|"sections";
+type Panel = "design"|"identity"|"images"|"actions"|"elements"|"sections"|"blocks";
 type CanvasObject = { id:string; type:"text"|"image"|"button"|"shape"; x:number; y:number; width:number; height:number; text?:string; url?:string; href?:string; color?:string; background?:string; fontSize?:number; radius?:number; file?:File; alt?:string; };
 type Device = "desktop"|"mobile";
 type SavedTemplate = { id:string; name:string; createdAt:string; primary_color:string; secondary_color:string; background_color:string; custom_button_color:string; layout:Record<string,any>; canvas_objects:CanvasObject[] };
@@ -27,6 +29,7 @@ export default function ClientEditor() {
   const [notice,setNotice] = useState("");
   const [panel,setPanel] = useState<Panel>("identity");
   const [device,setDevice] = useState<Device>("mobile");
+  const [livePreview,setLivePreview] = useState(true);
   const [leftOpen,setLeftOpen] = useState(true);
   const [rightOpen,setRightOpen] = useState(true);
   const [history,setHistory] = useState<BusinessForm[]>([]);
@@ -135,16 +138,41 @@ export default function ClientEditor() {
   const addButton=()=>change(c=>({...c,links:[...c.links,{label:"Novo botão",url:"https://",kind:"site" as LinkKind,color:c.custom_button_color||c.primary_color,position:c.links.length}]}));
   const addMedia=(file:File)=>{const issue=validateFile(file,file.type.startsWith("video/")?"video":"media");if(issue){setError(issue);return;}change(c=>({...c,media:[...c.media,{type:file.type.startsWith("video/")?"video":"image",url:URL.createObjectURL(file),alt:"Imagem da página",position:c.media.length,file,object_position_x:50,object_position_y:50,object_scale:1}]}));};
   const save=async(preview=false)=>{
-    setError("");setNotice("");const normalized=normalizeBusinessForm({...form,slug:form.slug||form.name});const errors=validateBusinessForm(normalized);if(Object.keys(errors).length){setError(Object.values(errors)[0]);return;}setSaving(true);
-    try{
-      const cleanMedia=normalized.media.filter(m=>!m.file&&!m.url.startsWith("blob:")).map(({file,...m})=>m);
-      const clean:BusinessForm={...normalized,logo_url:logoFile?"":normalized.logo_url,background_image_url:coverFile?"":normalized.background_image_url,media:cleanMedia,features:{...normalized.features,catalog_items:(normalized.features.catalog_items||[]).map(({file,...x})=>x),blocks:(normalized.features.blocks||[]).map(({file,...x})=>x),canvas_objects:[]}};
-      const first=await saveBusiness(clean,id);let logoUrl=clean.logo_url,backgroundUrl=clean.background_image_url;
-      if(logoFile)logoUrl=(await uploadAsset(logoFile,first.id,"logo")).url;if(coverFile)backgroundUrl=(await uploadAsset(coverFile,first.id,"background")).url;
-      const uploaded:BusinessMedia[]=[];for(const item of normalized.media){if(item.file){const asset=await uploadAsset(item.file,first.id,"media");uploaded.push({...item,url:asset.url,storage_path:asset.path,file:undefined});}else if(!item.url.startsWith("blob:"))uploaded.push({...item,file:undefined});}
-      const final=await saveBusiness({...normalized,logo_url:logoUrl,background_image_url:backgroundUrl,media:uploaded,features:{...normalized.features,catalog_items:(normalized.features.catalog_items||[]).map(({file,...x})=>x),blocks:(normalized.features.blocks||[]).map(({file,...x})=>x),canvas_objects:[]} as any},first.id);
-      setId(final.id);setForm(c=>({...c,logo_url:logoUrl,background_image_url:backgroundUrl,media:uploaded,features:{...c.features,canvas_objects:[]} as any}));setLogoFile(null);setCoverFile(null);setHistory([]);setFuture([]);setNotice("Página salva com sucesso.");if(preview)window.open(`/${final.slug}`,"_blank","noopener,noreferrer");
-    }catch(e:any){setError(e.message||"Não foi possível salvar a página.");}finally{setSaving(false);}
+    setError(""); setNotice(""); setSaving(true);
+    try {
+      const normalized=normalizeBusinessForm({...form,slug:form.slug||form.name});
+      const errors=validateBusinessForm(normalized);
+      if(Object.keys(errors).length) throw new Error(Object.values(errors)[0]);
+      const assetId=id || crypto.randomUUID();
+      const logoUrl=logoFile?(await uploadAsset(logoFile,assetId,"logo")).url:normalized.logo_url;
+      const backgroundUrl=coverFile?(await uploadAsset(coverFile,assetId,"background")).url:normalized.background_image_url;
+      const media:BusinessMedia[]=[];
+      for(const item of normalized.media){
+        const {file,...rest}=item;
+        if(file){ const asset=await uploadAsset(file,assetId,"media"); media.push({...rest,url:asset.url,storage_path:asset.path}); }
+        else { if(rest.url.startsWith("blob:")) throw new Error("Reenvie a imagem da galeria antes de salvar."); media.push(rest); }
+      }
+      const catalog_items=[];
+      for(const item of normalized.features.catalog_items||[]){
+        const {file,...rest}=item;
+        const image_url=file?(await uploadAsset(file,assetId,"catalog")).url:rest.image_url;
+        if(image_url?.startsWith("blob:")) throw new Error("Reenvie a imagem do catálogo.");
+        catalog_items.push({...rest,image_url});
+      }
+      const blocks=[];
+      for(const item of normalized.features.blocks||[]){
+        const {file,...rest}=item;
+        const image_url=file?(await uploadAsset(file,assetId,"media")).url:rest.image_url;
+        if(image_url?.startsWith("blob:")) throw new Error("Reenvie a imagem da seção.");
+        blocks.push({...rest,image_url});
+      }
+      const savedForm:BusinessForm={...normalized,logo_url:logoUrl,background_image_url:backgroundUrl,media,features:{...normalized.features,catalog_items,blocks,canvas_objects:[]}};
+      const final=await saveBusiness(savedForm,id);
+      setId(final.id); setForm(savedForm); setLogoFile(null); setCoverFile(null); setHistory([]); setFuture([]);
+      setNotice("BioSite salvo. Use Publicar e entregar para enviar ao cliente.");
+      if(preview) window.location.assign(`/admin/preview/${final.slug}`);
+    }catch(e:unknown){setError(e instanceof Error?e.message:"Não foi possível salvar o BioSite. Confira os dados e tente novamente.");}
+    finally{setSaving(false);}
   };
   const choose=(next:Panel)=>{setPanel(next);setRightOpen(true);};
   const editText=(value:string,onChange:(v:string)=>void,cls="")=><span contentEditable suppressContentEditableWarning spellCheck={false} role="textbox" aria-label="Editar texto na página" onClick={e=>e.stopPropagation()} onInput={e=>onChange(e.currentTarget.textContent||"")} className={`studio-inline-edit ${cls}`}>{value}</span>;
@@ -155,6 +183,7 @@ export default function ClientEditor() {
     ["actions",Link2,"Botões e links","Para onde seu público vai"],
     ["images",ImageIcon,"Imagens","Fotos e identidade"],
     ["sections",Layers3,"Seções","O que aparece na página"],
+    ["blocks",LayoutTemplate,"Blocos","Biblioteca, produtos e cardápio"],
     ["design",Palette,"Visual","Cores e estilo"]
   ];
   const addLink=()=>addButton();
@@ -162,20 +191,20 @@ export default function ClientEditor() {
     <header className="bio-header">
       <Link href="/admin" className="bio-back" aria-label="Voltar ao painel"><ArrowLeft size={18}/></Link>
       <div className="bio-brand"><div className="bio-brand-icon">P</div><div><strong>PLAK <span>CRIADOR</span></strong><small>{form.name||"Novo bio site"}</small></div></div>
-      <div className="bio-header-actions"><button className="bio-undo" onClick={undo} disabled={!history.length} title="Desfazer"><Undo2 size={17}/></button><button className="bio-undo" onClick={redo} disabled={!future.length} title="Refazer"><Redo2 size={17}/></button><button className="bio-preview-button" onClick={()=>save(true)} disabled={saving}><Eye size={16}/> Ver página</button><button className="bio-save-button" onClick={()=>save(false)} disabled={saving}>{saving?<Loader2 size={16} className="animate-spin"/>:<Check size={16}/>} {saving?"Salvando…":"Salvar bio site"}</button></div>
+      <div className="bio-header-actions">{id && <Link href={`/admin/delivery/${id}`} className="bio-preview-button">Publicar e entregar</Link>}<button className="bio-undo" onClick={undo} disabled={!history.length} title="Desfazer"><Undo2 size={17}/></button><button className="bio-undo" onClick={redo} disabled={!future.length} title="Refazer"><Redo2 size={17}/></button><button className="bio-preview-button" onClick={()=>save(true)} disabled={saving}><Eye size={16}/> Salvar e visualizar</button><button className="bio-save-button" onClick={()=>save(false)} disabled={saving}>{saving?<Loader2 size={16} className="animate-spin"/>:<Check size={16}/>} {saving?"Salvando…":"Salvar bio site"}</button></div>
     </header>
     {(error||notice)&&<div className={`bio-alert ${error?"error":"success"}`}>{error||notice}<button onClick={()=>{setError("");setNotice("")}}><X size={15}/></button></div>}
     <div className="bio-layout">
       <aside className="bio-sidebar"><div className="bio-side-title">CONSTRUA SUA PÁGINA</div>{navItems.map(([key,Icon,label,desc])=><button key={key} className={`bio-nav ${panel===key?"active":""}`} onClick={()=>choose(key)}><span className="bio-nav-icon"><Icon size={18}/></span><span><b>{label}</b><small>{desc}</small></span><ChevronDown size={14}/></button>)}<div className="bio-sidebar-tip"><Sparkles size={17}/><div><b>Simples e direto</b><p>Preencha o conteúdo e acompanhe o resultado na prévia ao lado.</p></div></div></aside>
       <main className="bio-editor-panel">
-        <div className="bio-panel-heading"><div><span className="bio-kicker">EDITAR BIO SITE</span><h1>{panel==="identity"?"Apresentação":panel==="actions"?"Botões e destinos":panel==="images"?"Imagens da página":panel==="sections"?"Conteúdo adicional":"Aparência"}</h1><p>{panel==="identity"?"Apresente o negócio com clareza.":panel==="actions"?"Adicione os caminhos que seus visitantes podem seguir.":panel==="images"?"Use fotos para dar personalidade à página.":panel==="sections"?"Escolha quais informações fazem parte do bio site.":"Defina uma combinação visual para a sua marca."}</p></div><span className="bio-step">{navItems.findIndex(x=>x[0]===panel)+1} / 5</span></div>
+        <div className="bio-panel-heading"><div><span className="bio-kicker">EDITAR BIO SITE</span><h1>{panel==="identity"?"Apresentação":panel==="actions"?"Botões e destinos":panel==="images"?"Imagens da página":panel==="sections"?"Conteúdo adicional":panel==="blocks"?"Biblioteca de blocos":"Aparência"}</h1><p>{panel==="identity"?"Apresente o negócio com clareza.":panel==="actions"?"Adicione os caminhos que seus visitantes podem seguir.":panel==="images"?"Use fotos para dar personalidade à página.":panel==="sections"?"Escolha quais informações fazem parte do bio site.":panel==="blocks"?"Adicione, ordene e edite blocos, produtos e cardápio.":"Defina uma combinação visual para a sua marca."}</p></div><span className="bio-step">{navItems.findIndex(x=>x[0]===panel)+1} / {navItems.length}</span></div>
         <div className="bio-fields">
           {panel==="identity"&&<>
             <div className="bio-field"><label>Logo ou foto de perfil</label><div className="bio-logo-upload">{form.logo_url?<img src={form.logo_url} alt="Logo atual"/>:<span><ImageIcon size={20}/></span>}<div><b>{form.logo_url?"Imagem selecionada":"Adicione a marca do negócio"}</b><small>PNG ou JPG · imagem quadrada funciona melhor</small></div><button onClick={()=>logoRef.current?.click()}><Upload size={15}/> Escolher</button></div></div>
             <div className="bio-field"><label>Nome do negócio</label><input className="bio-input" value={form.name} onChange={e=>updateName(e.target.value)} placeholder="Ex.: Café da Praça"/><small>Esse é o nome principal que aparece na página.</small></div>
-            <div className="bio-field"><label>Nome curto do endereço</label><div className="bio-slug"><span>plak.site/</span><input className="bio-input" value={form.slug} onChange={e=>update("slug",normalizeSlug(e.target.value))} placeholder="seu-negocio"/></div></div>
+            <div className="bio-field"><label>Nome curto do endereço</label><div className="bio-slug"><span>{window.location.host}/</span><input className="bio-input" value={form.slug} onChange={e=>update("slug",normalizeSlug(e.target.value))} placeholder="seu-negocio"/></div></div>
             <div className="bio-field"><label>Descrição curta</label><textarea className="bio-input" rows={3} value={form.tagline} onChange={e=>update("tagline",e.target.value)} placeholder="Conte em uma frase o que você oferece."/><small>Uma frase clara ajuda as pessoas a entenderem seu negócio.</small></div>
-            <div className="bio-field"><label>WhatsApp</label><input className="bio-input" value={form.whatsapp_number} onChange={e=>update("whatsapp_number",e.target.value)} placeholder="DDD + número"/><small>O botão de WhatsApp aparece quando você informar o número.</small></div>
+            <div className="bio-field"><label>WhatsApp</label><input className="bio-input" value={form.whatsapp_number} onChange={e=>update("whatsapp_number",e.target.value)} placeholder="55 + DDD + número"/><small>Inclua o código do país: Brasil 55. Ex.: 5511999999999.</small></div>
             <div className="bio-field"><label>Mensagem inicial do WhatsApp</label><input className="bio-input" value={form.whatsapp_message} onChange={e=>update("whatsapp_message",e.target.value)} placeholder="Olá! Vim pelo seu bio site."/></div>
           </>}
           {panel==="actions"&&<>
@@ -198,22 +227,24 @@ export default function ClientEditor() {
             <div className="bio-field"><label>Título dos depoimentos</label><input className="bio-input" value={form.features.testimonials_title||"O que nossos clientes dizem"} onChange={e=>updateFeatures({testimonials_title:e.target.value})}/></div><div className="bio-field"><label>Depoimentos (um por linha)</label><textarea className="bio-input" rows={4} value={form.features.testimonials_text||""} onChange={e=>updateFeatures({testimonials_text:e.target.value})} placeholder="Atendimento excelente!\nProdutos de qualidade."/></div>
             <div className="bio-field"><label>Endereço</label><input className="bio-input" value={form.address} onChange={e=>update("address",e.target.value)} placeholder="Rua, número, bairro e cidade"/></div><div className="bio-field"><label>Link do mapa</label><input className="bio-input" value={form.maps_url} onChange={e=>update("maps_url",e.target.value)} placeholder="https://maps.google.com/..."/></div>
           </>}
+          {panel==="blocks"&&<BlockLibrary blocks={form.features.blocks||[]} catalog={form.features.catalog_items||[]} whatsapp={form.whatsapp_number} whatsappMessage={form.whatsapp_message} instagram={form.instagram_url} address={form.address} leadEnabled={Boolean(form.features.lead_enabled)} onBlocks={next=>updateFeatures({blocks:next})} onCatalog={next=>updateFeatures({catalog_items:next})} onLead={enabled=>updateFeatures({lead_enabled:enabled})} onGo={choose} onNotice={setNotice}/>}
           {panel==="design"&&<>
             <div className="bio-color-setting"><div><b>Cor principal</b><small>Botões e destaques</small></div><input type="color" value={form.primary_color} onChange={e=>update("primary_color",e.target.value)}/></div><div className="bio-color-setting"><div><b>Cor secundária</b><small>Detalhes e elementos de apoio</small></div><input type="color" value={form.secondary_color} onChange={e=>update("secondary_color",e.target.value)}/></div><div className="bio-color-setting"><div><b>Fundo da página</b><small>Cor de base do bio site</small></div><input type="color" value={form.background_color} onChange={e=>update("background_color",e.target.value)}/></div>
+            <div className="bio-field"><label>Animações da página</label><select className="bio-input" value={layout.entrance||"soft"} onChange={e=>updateLayout({entrance:e.target.value})}><option value="soft">Entrada suave</option><option value="none">Sem animação</option></select></div>
             <div className="bio-field"><label>Estilo dos botões</label><select className="bio-input" value={layout.button_style} onChange={e=>updateLayout({button_style:e.target.value})}><option value="soft">Arredondado</option><option value="pill">Pílula</option><option value="square">Quadrado</option><option value="outline">Contorno</option></select></div><div className="bio-field"><label>Fonte dos títulos</label><select className="bio-input" value={layout.font_family} onChange={e=>updateLayout({font_family:e.target.value})}>{["Inter","Poppins","Montserrat","Playfair Display","Lora","Roboto","Open Sans","Nunito","Arial","Georgia"].map(f=><option key={f}>{f}</option>)}</select></div>
             <div className="bio-palette-title">PALETAS PRONTAS</div><div className="bio-palettes">{[["#173F35","#D6B878","#F7F5EF"],["#243B64","#E8B4A2","#F6F4F0"],["#3D2926","#D5A15E","#FBF4E9"],["#442C54","#C5A6D8","#F7F1FA"],["#245D75","#B9D9D0","#F4F8F7"],["#6B342D","#E4B7A0","#FFF8F1"]].map((p,i)=><button key={i} onClick={()=>change(c=>({...c,primary_color:p[0],secondary_color:p[1],background_color:p[2]}))} aria-label={`Aplicar paleta ${i+1}`}><i style={{background:p[0]}}/><i style={{background:p[1]}}/><i style={{background:p[2]}}/></button>)}</div>
           </>}
         </div>
         <div className="bio-panel-footer"><span><Check size={14}/> A prévia acompanha suas alterações</span><button onClick={()=>save(false)} disabled={saving}>{saving?<Loader2 size={15} className="animate-spin"/>:<Save size={15}/>} Salvar</button></div>
       </main>
-      <section className="bio-preview-area"><div className="bio-preview-head"><div><span className="bio-kicker">PRÉVIA AO VIVO</span><h2>Assim sua página aparece</h2></div><div className="bio-device"><Smartphone size={15}/><span>Celular</span></div></div><div className="bio-preview-scroll"><div className="bio-phone"><div className="bio-phone-speaker"/><div className="bio-page" style={{background:form.background_color,color:form.primary_color,backgroundImage:form.background_image_url?`linear-gradient(#ffffff22,#ffffff22),url(${form.background_image_url})`:undefined,backgroundSize:"cover",backgroundPosition:"center"}}>
+      <section className="bio-preview-area"><div className="bio-preview-head"><div><span className="bio-kicker">PRÉVIA AO VIVO</span><h2>Assim sua página aparece</h2></div><div className="bio-device sx-device-switch" role="group" aria-label="Modo de visualização"><button type="button" className={device==="mobile"?"is-active":""} aria-pressed={device==="mobile"} onClick={()=>setDevice("mobile")}><Smartphone size={15}/><span>Celular</span></button><button type="button" className={device==="desktop"?"is-active":""} aria-pressed={device==="desktop"} onClick={()=>setDevice("desktop")}><Monitor size={15}/><span>Desktop</span></button><button type="button" className={livePreview?"is-active":""} aria-pressed={livePreview} onClick={()=>setLivePreview(!livePreview)}><span>{livePreview?"Página real":"Prévia rápida"}</span></button></div></div>{livePreview?<div className="bio-preview-scroll"><div className={`bio-phone sx-live ${device==="desktop"?"is-desktop":""}`}><LivePreview form={form} id={id||undefined}/></div></div>:<div className="bio-preview-scroll"><div className={`bio-phone ${device==="desktop"?"is-desktop":""}`}><div className="bio-phone-speaker"/><div className="bio-page" style={{background:form.background_color,color:form.primary_color,backgroundImage:form.background_image_url?`linear-gradient(#ffffff22,#ffffff22),url(${form.background_image_url})`:undefined,backgroundSize:"cover",backgroundPosition:"center"}}>
         <div className="bio-page-content"><div className="bio-avatar" style={{borderColor:form.secondary_color,background:form.background_color}}>{form.logo_url?<img src={form.logo_url} alt="Logo"/>:<span>{(form.name||"P").slice(0,1).toUpperCase()}</span>}</div><h2 style={{fontFamily:layout.font_family,color:form.primary_color}}>{form.name||"Nome do seu negócio"}</h2><p className="bio-tagline" style={{color:form.primary_color}}>{form.tagline||"Uma apresentação curta do seu negócio."}</p>
           {visibleLinks.length>0&&<div className="bio-preview-links">{visibleLinks.map((link,i)=><div key={`${link.label}-${i}`} className="bio-preview-link" style={{background:form.custom_button_color||form.primary_color,color:layout.custom_button_text_color||"#fff",borderRadius:layout.button_style==="pill"?999:layout.button_style==="square"?7:13}}>{link.label||"Novo botão"}<span>↗</span></div>)}</div>}
           {form.features.campaign_enabled&&form.features.campaign_title&&<div className="bio-preview-card"><small>DESTAQUE</small><b>{form.features.campaign_title}</b><p>{form.features.campaign_text||"Descrição da sua oferta."}</p></div>}
           {form.media.length>0&&<div className="bio-preview-gallery">{form.media.slice(0,4).map((m,i)=><img key={`${m.url}-${i}`} src={m.url} alt={m.alt||"Foto"}/>)}</div>}
           {form.features.catalog_title&&<div className="bio-preview-info"><b>{form.features.catalog_title}</b><p>{form.features.catalog_subtitle||"Veja nossas principais opções"}</p>{catalog.length>0&&<small>{catalog.length} itens cadastrados</small>}</div>}
           {form.features.testimonials_text&&<div className="bio-preview-info"><b>{form.features.testimonials_title||"O que nossos clientes dizem"}</b><p>“{form.features.testimonials_text.split("\n")[0]}”</p></div>}
-          {form.address&&<div className="bio-preview-info"><b>Onde estamos</b><p>{form.address}</p></div>}<div className="bio-preview-footer">Feito com <b>PLAK</b></div></div></div><div className="bio-phone-bottom"/></div></div><div className="bio-preview-note"><span className="bio-status-dot"/> Prévia de edição <span>·</span> Salve para aplicar na página</div></section>
+          {form.address&&<div className="bio-preview-info"><b>Onde estamos</b><p>{form.address}</p></div>}<div className="bio-preview-footer">Feito com <b>PLAK</b></div></div></div><div className="bio-phone-bottom"/></div></div>}<div className="bio-preview-note"><span className="bio-status-dot"/> Prévia de edição <span>·</span> Salve para aplicar na página</div></section>
     </div>
     <input ref={logoRef} type="file" accept="image/*" hidden onChange={e=>{const file=e.target.files?.[0];if(file){setLogoFile(file);update("logo_url",URL.createObjectURL(file));}e.currentTarget.value="";}}/><input ref={mediaRef} type="file" accept="image/*" hidden onChange={e=>{const file=e.target.files?.[0];if(file)addMedia(file);e.currentTarget.value="";}}/><input ref={coverRef} type="file" accept="image/*" hidden onChange={e=>{const file=e.target.files?.[0];if(file){setCoverFile(file);update("background_image_url",URL.createObjectURL(file));}e.currentTarget.value="";}}/>
   </div></AdminShell>;

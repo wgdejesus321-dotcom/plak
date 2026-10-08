@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
-import type { AnalyticsEvent, AnalyticsSummary, Business, BusinessBundle, BusinessForm, BusinessLink, BusinessMedia, Lead, Profile } from "./types";
-import { normalizeBusinessForm } from "./validation";
+import type { AnalyticsEvent, AnalyticsSummary, Business, BusinessBundle, BusinessForm, BusinessLink, BusinessMedia, Lead, Profile, WorkflowStage } from "./types";
+import { normalizeBusinessForm, validateBusinessForm } from "./validation";
 
 export const dbError = "Conecte o Supabase para carregar dados reais. Configure as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY.";
 const businessColumns = "id,name,slug,logo_url,tagline,google_review_url,whatsapp_number,whatsapp_message,instagram_url,website_url,address,maps_url,primary_color,secondary_color,background_color,background_image_url,standard_button_color,custom_button_color,seo_title,seo_description,seo_image_url,features,status,published_at,created_at,updated_at,created_by";
@@ -38,9 +38,13 @@ export async function getBusiness(id: string) {
 export async function saveBusiness(rawForm: BusinessForm, id?: string) {
   const db = requireDb();
   const form = normalizeBusinessForm(rawForm);
+  const errors = validateBusinessForm(form);
+  if (Object.keys(errors).length) throw new Error(Object.values(errors)[0]);
   rejectBlob(form.logo_url, "A logo");
   rejectBlob(form.background_image_url, "A imagem de fundo");
   form.media.forEach((media) => rejectBlob(media.url, "Uma mídia"));
+  (form.features.catalog_items || []).forEach(item => rejectBlob(item.image_url, "Uma imagem do catálogo"));
+  (form.features.blocks || []).forEach(item => { rejectBlob(item.image_url, "Uma imagem de seção"); rejectBlob(item.url, "Uma mídia de seção"); });
   const payload = {
     name: form.name,
     slug: form.slug,
@@ -64,23 +68,18 @@ export async function saveBusiness(rawForm: BusinessForm, id?: string) {
     seo_image_url: form.seo_image_url || null,
     features: form.features,
   };
-  const result = id
-    ? await db.from("businesses").update(payload).eq("id", id).select(businessColumns).single()
-    : await db.from("businesses").insert({ ...payload, created_by: (await db.auth.getUser()).data.user?.id }).select(businessColumns).single();
-  if (result.error) throw result.error;
-  const business = result.data as Business;
-  const { error: linkDeleteError } = await db.from("business_links").delete().eq("business_id", business.id);
-  if (linkDeleteError) throw linkDeleteError;
-  if (form.links.length) {
-    const { error } = await db.from("business_links").insert(form.links.map((link, position) => ({ business_id: business.id, label: link.label, url: link.url, kind: link.kind, color: link.color, position })));
-    if (error) throw error;
+  const { data, error } = await db.rpc("save_biosite", {
+    p_id: id ?? null,
+    p_business: payload,
+    p_links: form.links.map((link, position) => ({ label: link.label, url: link.url, kind: link.kind, color: link.color, position })),
+    p_media: form.media.map((media, position) => ({ type: media.type, url: media.url, storage_path: media.storage_path ?? null, alt: media.alt || "Foto do cliente", position, object_position_x: media.object_position_x ?? 50, object_position_y: media.object_position_y ?? 50, object_scale: media.object_scale ?? 1 })),
+  });
+  if (error) {
+    if (error.code === "PGRST202") throw new Error("Aplique a migration 0006 no Supabase antes de salvar BioSites.");
+    if (error.code === "23505") throw new Error("Esse endereço já está em uso. Escolha outro nome curto.");
+    throw error;
   }
-  const { error: mediaDeleteError } = await db.from("business_media").delete().eq("business_id", business.id);
-  if (mediaDeleteError) throw mediaDeleteError;
-  if (form.media.length) {
-    const { error } = await db.from("business_media").insert(form.media.map((media, position) => ({ business_id: business.id, type: media.type, url: media.url, storage_path: media.storage_path ?? null, alt: media.alt || "Foto do cliente", position, object_position_x: media.object_position_x ?? 50, object_position_y: media.object_position_y ?? 50, object_scale: media.object_scale ?? 1 })));
-    if (error) throw error;
-  }
+  const business = data as Business;
   return business;
 }
 
@@ -172,9 +171,9 @@ export async function removeProfile(id: string) {
 
 
 export async function createLead(lead: Omit<Lead, "id" | "created_at" | "status">) {
-  const { data, error } = await requireDb().from("leads").insert({ ...lead, status: "new" }).select("*").single();
+  const { error } = await requireDb().from("leads").insert({ ...lead, name: lead.name.trim(), status: "new" });
   if (error) throw error;
-  return data as Lead;
+  return { ...lead, status: "new" } as Lead;
 }
 
 export async function listLeads(businessId?: string) {
@@ -187,7 +186,7 @@ export async function listLeads(businessId?: string) {
 
 export async function duplicateBusiness(id: string) {
   const source = await getBusiness(id);
-  const copy: BusinessForm = { name: `${source.name} (cópia)`, slug: `${source.slug}-copia`, logo_url: source.logo_url || "", tagline: source.tagline, google_review_url: source.google_review_url || "", whatsapp_number: source.whatsapp_number || "", whatsapp_message: source.whatsapp_message || "", instagram_url: source.instagram_url || "", website_url: source.website_url || "", address: source.address || "", maps_url: source.maps_url || "", primary_color: source.primary_color, secondary_color: source.secondary_color, background_color: source.background_color, background_image_url: source.background_image_url || "", standard_button_color: source.standard_button_color, custom_button_color: source.custom_button_color, seo_title: source.seo_title || "", seo_description: source.seo_description || "", seo_image_url: source.seo_image_url || "", features: source.features, links: (source.business_links || []).map(({ id: _id, business_id: _businessId, ...link }) => link), media: (source.business_media || []).map(({ id: _id, business_id: _businessId, ...media }) => media) };
+  const copy: BusinessForm = { name: `${source.name} (cópia)`, slug: `${source.slug.slice(0, 95).replace(/-+$/, "")}-copia-${crypto.randomUUID().slice(0, 8)}`, logo_url: source.logo_url || "", tagline: source.tagline, google_review_url: source.google_review_url || "", whatsapp_number: source.whatsapp_number || "", whatsapp_message: source.whatsapp_message || "", instagram_url: source.instagram_url || "", website_url: source.website_url || "", address: source.address || "", maps_url: source.maps_url || "", primary_color: source.primary_color, secondary_color: source.secondary_color, background_color: source.background_color, background_image_url: source.background_image_url || "", standard_button_color: source.standard_button_color, custom_button_color: source.custom_button_color, seo_title: source.seo_title || "", seo_description: source.seo_description || "", seo_image_url: source.seo_image_url || "", features: source.features, links: (source.business_links || []).map(({ id: _id, business_id: _businessId, ...link }) => link), media: (source.business_media || []).map(({ id: _id, business_id: _businessId, ...media }) => media) };
   return saveBusiness(copy);
 }
 
@@ -208,4 +207,31 @@ export async function saveStudioProject(document: Record<string, unknown>, id?: 
     : await db.from("studio_projects").insert({ owner_id: auth.user.id, name, document }).select("id,name,document,updated_at").single();
   if (result.error) throw result.error;
   return result.data as { id: string; name: string; document: Record<string, unknown>; updated_at: string };
+}
+
+export interface PortfolioStats { views: number; clicks: number; leads: number; conversions: number; days: number }
+
+/** Conversions are defined as tracked button clicks plus received leads in the selected period. */
+export async function getPortfolioStats(days = 30): Promise<PortfolioStats> {
+  const db = requireDb();
+  const since = new Date(Date.now() - days * 86400000).toISOString();
+  const countEvents = async (type: "view" | "click") => {
+    const { count, error } = await db.from("analytics_events").select("id", { count: "exact", head: true }).eq("event_type", type).gte("created_at", since);
+    if (error) throw error;
+    return count ?? 0;
+  };
+  const [views, clicks] = await Promise.all([countEvents("view"), countEvents("click")]);
+  const { count: leadCount, error } = await db.from("leads").select("id", { count: "exact", head: true }).gte("created_at", since);
+  if (error) throw error;
+  const leads = leadCount ?? 0;
+  return { views, clicks, leads, conversions: clicks + leads, days };
+}
+
+export async function setBusinessWorkflow(id: string, workflow: WorkflowStage) {
+  const db = requireDb();
+  const { data, error } = await db.from("businesses").select("features").eq("id", id).single();
+  if (error) throw error;
+  const features = (data?.features ?? {}) as Business["features"];
+  const { error: updateError } = await db.from("businesses").update({ features: { ...features, meta: { ...(features.meta ?? {}), workflow } } }).eq("id", id);
+  if (updateError) throw updateError;
 }

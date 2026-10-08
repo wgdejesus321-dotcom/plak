@@ -15,20 +15,37 @@ export function normalizeSlug(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 120);
+    .slice(0, 120).replace(/-+$/g, "");
+}
+
+export const RESERVED_SLUGS = ["admin", "login", "api", "assets", "__manus__", "manus-storage"];
+
+export function isReservedSlug(value: string) {
+  return RESERVED_SLUGS.includes(value.toLowerCase());
 }
 
 export function ensureHttpUrl(value: string, fallbackScheme = "https") {
   const trimmed = value.trim();
   if (!trimmed) return "";
-  if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return trimmed;
-  return `${fallbackScheme}://${trimmed}`;
+  if (/[\u0000-\u001f\u007f]/.test(trimmed)) throw new Error("O link contém caracteres inválidos.");
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(trimmed);
+  const candidate = hasScheme ? trimmed : `${fallbackScheme}://${trimmed.replace(/^\/\//, "")}`;
+  let parsed: URL;
+  try { parsed = new URL(candidate); } catch { throw new Error("Informe um link válido, como https://exemplo.com."); }
+  if (!["https:", "http:", "mailto:", "tel:"].includes(parsed.protocol)) throw new Error("Esse tipo de link não é permitido.");
+  if (["https:", "http:"].includes(parsed.protocol) && (!parsed.hostname || parsed.username || parsed.password)) throw new Error("Informe um endereço sem usuário ou senha no link.");
+  return candidate;
+}
+
+export function safeHref(value: string | null | undefined) {
+  if (!value) return undefined;
+  try { return ensureHttpUrl(value); } catch { return undefined; }
 }
 
 export function normalizeInstagram(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return ensureHttpUrl(trimmed);
   const handle = trimmed.replace(/^@/, "").replace(/^instagram\.com\//i, "").replace(/^\/+/, "");
   return handle ? `https://instagram.com/${handle}` : "";
 }
@@ -63,6 +80,9 @@ export function validateBusinessForm(form: BusinessForm) {
   const errors: Record<string, string> = {};
   if (form.name.trim().length < 2) errors.name = "Informe o nome do negócio.";
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(form.slug)) errors.slug = "O endereço da página usa apenas letras minúsculas, números e hífens. Ele é gerado automaticamente pelo nome.";
+  if (isReservedSlug(form.slug)) errors.slug = "Esse endereço é reservado. Escolha outro nome para o BioSite.";
+  if (form.name.length > 160) errors.name = "O nome deve ter até 160 caracteres.";
+  if (form.tagline.length > 255) errors.tagline = "A descrição deve ter até 255 caracteres.";
   for (const [key, value] of Object.entries({
     primary_color: form.primary_color,
     secondary_color: form.secondary_color,
@@ -72,6 +92,9 @@ export function validateBusinessForm(form: BusinessForm) {
   })) if (!isHexColor(value)) errors[key] = "Use uma cor hexadecimal, como #0F766E.";
   for (const link of form.links) if (!link.label.trim() || !link.url.trim()) errors.links = "Revise os botões personalizados.";
   if (form.media.some((item) => item.url.startsWith("blob:") && !item.file)) errors.media = "Uma mídia precisa ser reenviada antes de salvar.";
+  const featureUrls = [form.features.campaign_url, ...(form.features.catalog_items || []).map(x => x.button_url), ...(form.features.blocks || []).flatMap(x => [x.button_url, x.type !== "image" && x.type !== "video" ? x.url : undefined]), ...(form.features.canvas_objects || []).map(x => x.href)].filter((x): x is string => Boolean(x));
+  if (featureUrls.some(x => !safeHref(x))) errors.features = "Revise os links do catálogo, das seções e dos botões livres.";
+  if (form.whatsapp_number && !/^\d{10,15}$/.test(normalizeWhatsApp(form.whatsapp_number))) errors.whatsapp_number = "Informe WhatsApp com código do país, DDD e número (ex.: 5511999999999).";
   return errors;
 }
 
