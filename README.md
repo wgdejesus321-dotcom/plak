@@ -10,6 +10,6 @@ pnpm build
 pnpm dev
 ```
 
-Requer as migrations Supabase 0001–0006 (0007 é opcional) e uma conta administradora aprovada.
+Os Bio-sites usam as migrations 0001–0006 (0007 contém recursos opcionais). Para habilitar Web Cardápios e pedidos, aplique também `supabase/migrations/0008_web_menus_orders.sql`; veja `docs/WEB_MENUS_ORDERS.md`. O projeto exige uma conta administradora aprovada para gerenciar clientes.
 
-O editor livre `/admin/studio` e o editor de clientes `/admin/client/:id` continuam disponíveis. Deploy: `docs/DEPLOYMENT.md` e `DEPLOY_RAILWAY.md`.
+O editor livre `/admin/studio` e o editor de clientes `/admin/client/:id` continuam disponíveis. Para uma verificação estática do contrato do novo módulo (sem conexão ao Supabase), execute `node scripts/check-web-menu-contract.mjs`. Deploy: `docs/DEPLOYMENT.md` e `DEPLOY_RAILWAY.md`.

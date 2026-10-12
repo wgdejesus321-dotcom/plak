@@ -49,3 +49,14 @@
 - A migration cria a tabela `leads` com inserção pública controlada e leitura protegida para administradores.
 - Depois da migration, publicar novamente o frontend e o servidor no Railway.
 - No painel, acessar **Modelos prontos** para replicar presets e **Leads** para acompanhar contatos recebidos.
+
+
+## Web Cardápios e gestão de pedidos (PLAK)
+
+- Aplique `supabase/migrations/0008_web_menus_orders.sql` depois das migrations 0001–0007, usando o SQL Editor do Supabase ou a Supabase CLI. Faça backup antes de aplicar qualquer migration em produção.
+- Configure `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` (ou `VITE_SUPABASE_ANON_KEY` legado) no ambiente de build. O frontend não pode usar uma chave `service_role`/secret.
+- No painel de Database → Replication do Supabase, habilite Realtime para `public.menu_orders` e `public.menu_order_items`. Se a assinatura não conectar, a interface consulta o banco periodicamente como contingência.
+- Entre como admin aprovado em `/admin/cardapios`, selecione um estabelecimento existente, crie o cardápio, categorias e produtos, configure as modalidades e publique. Em seguida, atribua acesso ao empresário através da área “Acesso da equipe”.
+- Links previstos: `/:slug/cardapio`, `/painel/pedidos`, `/painel/cozinha`, `/painel/historico` e `/pedido/:token`. As rotas privadas exigem sessão aprovada; RLS e RPCs no Supabase são a fronteira de autorização.
+- A confirmação de pagamento não é automatizada nesta versão: o pedido registra apenas a forma escolhida e o estado `pending` até que uma integração/pessoa autorizada confirme o pagamento. Não tratar o valor registrado como dinheiro recebido.
+- A validação ponta a ponta exige um projeto Supabase real com as migrations aplicadas, usuários e produtos cadastrados. Sem as credenciais de um projeto de teste, não é possível validar RLS, concorrência real ou publicação externa apenas pelo build local.

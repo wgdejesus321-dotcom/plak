@@ -13,7 +13,7 @@ export default function Home() {
   return <div className="min-h-screen overflow-hidden bg-[#f7f7f2] text-[#1c2a25]">
     <header className="relative z-20 mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-10 lg:px-14">
       <BrandLogo />
-      <nav className="hidden items-center gap-8 text-sm font-semibold text-[#657269] md:flex"><a href="#como-funciona" className="hover:text-[#263b30]">Como funciona</a><a href="#segmentos" className="hover:text-[#263b30]">Para negócios</a><a href="#vantagens" className="hover:text-[#263b30]">Vantagens</a><Link href="/login" className="rounded-full border border-[#dce3d8] px-5 py-2.5 text-[#263b30] transition hover:border-[#263b30]">Entrar <ArrowRight className="ml-2 inline h-4 w-4" /></Link></nav>
+      <nav className="hidden items-center gap-8 text-sm font-semibold text-[#657269] md:flex"><a href="#produtos" className="hover:text-[#263b30]">Produtos</a><a href="#como-funciona" className="hover:text-[#263b30]">Como funciona</a><a href="#segmentos" className="hover:text-[#263b30]">Para negócios</a><a href="#vantagens" className="hover:text-[#263b30]">Vantagens</a><Link href="/login" className="rounded-full border border-[#dce3d8] px-5 py-2.5 text-[#263b30] transition hover:border-[#263b30]">Entrar <ArrowRight className="ml-2 inline h-4 w-4" /></Link></nav>
       <Link href="/login" className="inline-flex items-center gap-2 rounded-full bg-[#263b30] px-4 py-2.5 text-xs font-extrabold text-white md:hidden">Acessar <ArrowUpRight size={15}/></Link>
     </header>
 
@@ -45,6 +45,30 @@ export default function Home() {
               </div></div>
             </div>
             <div className="absolute -bottom-1 right-[1%] hidden items-center gap-3 rounded-2xl border border-white bg-white/95 px-4 py-3 shadow-xl sm:flex"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#eaf1de] text-[#657c4b]"><MousePointer2 size={18}/></span><span><b className="block text-xs">Feito para converter</b><small className="text-[10px] text-[#849087]">Contato a poucos toques</small></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="produtos" className="border-y border-[#e5e9df] bg-[#f0f2e9] px-5 py-16 sm:px-10 sm:py-20 lg:px-14">
+        <div className="mx-auto max-w-[1240px]">
+          <p className="text-[10px] font-black uppercase tracking-[.22em] text-[#7b9258]">Dois produtos · uma plataforma</p>
+          <h2 className="mt-4 max-w-3xl text-4xl font-black leading-[.98] tracking-[-.07em] sm:text-5xl">Sua presença digital e sua operação, conectadas.</h2>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-[#758178]">Escolha a ferramenta que seu negócio precisa hoje e evolua para uma operação completa quando estiver pronto.</p>
+          <div className="mt-9 grid gap-5 md:grid-cols-2">
+            <article className="rounded-[26px] border border-[#e0e6d9] bg-white p-6 sm:p-8">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edf2e4] text-[#607b48]"><Layers3 size={22}/></div>
+              <p className="mt-6 text-[10px] font-black uppercase tracking-[.18em] text-[#7b9258]">PLAK · 01</p><h3 className="mt-2 text-2xl font-black tracking-[-.05em]">Bio-sites profissionais</h3>
+              <p className="mt-3 max-w-lg text-sm leading-7 text-[#738075]">Uma página personalizada para mostrar sua marca, serviços, localização, redes sociais e links importantes.</p>
+              <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold text-[#657467]"><span className="rounded-full bg-[#f2f5ed] px-3 py-2">Editor visual</span><span className="rounded-full bg-[#f2f5ed] px-3 py-2">Modelos profissionais</span><span className="rounded-full bg-[#f2f5ed] px-3 py-2">Link público</span></div>
+              <Link href="/login" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#263b30] px-5 py-3 text-xs font-extrabold text-white">Criar Bio-site <ArrowUpRight size={14}/></Link>
+            </article>
+            <article className="relative overflow-hidden rounded-[26px] bg-[#1d3227] p-6 text-white sm:p-8"><div className="pointer-events-none absolute -right-12 -top-16 h-52 w-52 rounded-full border-[26px] border-white/5"/>
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#d8eea4] text-[#263b30]"><Utensils size={22}/></div>
+              <p className="relative mt-6 text-[10px] font-black uppercase tracking-[.18em] text-[#d8eea4]">PLAK · 02</p><h3 className="relative mt-2 text-2xl font-black tracking-[-.05em]">Web Cardápios & pedidos</h3>
+              <p className="relative mt-3 max-w-lg text-sm leading-7 text-white/70">Um cardápio digital para vender pelo celular, receber pedidos e acompanhar a fila no painel ou na tela da cozinha.</p>
+              <div className="relative mt-5 flex flex-wrap gap-2 text-[10px] font-bold text-white/80"><span className="rounded-full bg-white/10 px-3 py-2">Carrinho e adicionais</span><span className="rounded-full bg-white/10 px-3 py-2">Pedidos em etapas</span><span className="rounded-full bg-white/10 px-3 py-2">Painel responsivo</span></div>
+              <Link href="/login" className="relative mt-7 inline-flex items-center gap-2 rounded-full bg-[#d8eea4] px-5 py-3 text-xs font-extrabold text-[#263b30]">Criar Web Cardápio <ArrowUpRight size={14}/></Link>
+            </article>
           </div>
         </div>
       </section>
