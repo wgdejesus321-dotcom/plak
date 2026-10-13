@@ -16,3 +16,42 @@
 .plak-density-compact main{padding-top:10px!important;padding-bottom:10px!important}
 
 @media(min-width:1051px){.ps-workspace{grid-template-columns:var(--ps-left-width,260px) minmax(260px,1fr) 286px}.ps-workspace.left-collapsed{grid-template-columns:0 minmax(260px,1fr) 286px}.ps-workspace.right-collapsed{grid-template-columns:var(--ps-left-width,260px) minmax(260px,1fr) 0}.ps-workspace.left-collapsed.right-collapsed{grid-template-columns:0 minmax(260px,1fr) 0}}
+
+/* BIOCRAFT-inspired redesign for PLAK Studio: premium graphite + electric violet. */
+.plak-studio{--moss:#8b5cf6;--moss-dark:#6d28d9;--moss-deep:#171323;--moss-pale:#261b3e;--gold:#22d3ee;--line:#ffffff16;--ink:#f4f1fb;--muted:#a49bb7;--plak-workspace:#101017;background:#0b0b11;color:#f4f1fb;font-family:Inter,Geist,Manrope,system-ui,sans-serif;color-scheme:dark}
+.plak-studio *{scrollbar-color:#393044 #111018}
+.plak-studio .ps-topbar{background:linear-gradient(180deg,#15141d,#101017);border-bottom:1px solid #ffffff14;color:#f4f1fb;box-shadow:0 8px 28px #0003}
+.plak-studio .ps-brand{filter:drop-shadow(0 0 14px #8b5cf633)}
+.plak-studio .ps-doc-name,.plak-studio .ps-template-select,.plak-studio .ps-input,.plak-studio .ps-prop-grid input,.plak-studio .ps-prop-grid select,.plak-studio .ps-dimensions input,.plak-studio .ps-color-line input:not([type=color]){background:#17151f;border:1px solid #ffffff18;color:#f4f1fb;border-radius:9px}
+.plak-studio .ps-status{color:#a49bb7}.plak-studio .ps-status i.saved{background:#34d399;box-shadow:0 0 10px #34d39988}
+.plak-studio .ps-icon-btn,.plak-studio .ps-top-btn.ps-secondary{background:#191722;border:1px solid #ffffff18;color:#c8c0d8;border-radius:9px}
+.plak-studio .ps-icon-btn:hover,.plak-studio .ps-top-btn.ps-secondary:hover{background:#282035;border-color:#8b5cf688;color:#fff}
+.plak-studio .ps-top-btn.ps-primary{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:1px solid #a78bfa;color:white;border-radius:10px;box-shadow:0 0 22px #8b5cf644}
+.plak-studio .ps-workspace{background:#0b0b11}
+.plak-studio .ps-left,.plak-studio .ps-right{background:linear-gradient(180deg,#13121a,#101017);border-color:#ffffff13;color:#eae5f4}
+.plak-studio .ps-tabs{border-bottom:1px solid #ffffff12;background:#121119}
+.plak-studio .ps-tabs button{color:#a49bb7}.plak-studio .ps-tabs button.active{background:#261b3e;border-color:#8b5cf6;color:#c4b5fd;box-shadow:inset 3px 0 #8b5cf6}
+.plak-studio .ps-eyebrow,.plak-studio .ps-field-label,.plak-studio .ps-layer-head{color:#9389a8}
+.plak-studio .ps-tool-card{background:#17151f;border:1px solid #ffffff12;color:#f4f1fb;border-radius:12px}
+.plak-studio .ps-tool-card:hover{background:#211a2e;border-color:#8b5cf677;transform:translateY(-1px)}
+.plak-studio .ps-tool-card small{color:#9f96b2}.plak-studio .ps-tool-icon.purple{background:#332253;color:#c4b5fd}.plak-studio .ps-tool-icon.green{background:#123039;color:#67e8f9}
+.plak-studio .ps-separator,.plak-studio .ps-prop-section,.plak-studio .ps-right-heading{border-color:#ffffff13}
+.plak-studio .ps-dimensions input,.plak-studio .ps-preset-row button,.plak-studio .ps-color-line input:not([type=color]),.plak-studio .ps-align-tools button,.plak-studio .ps-prop-actions button,.plak-studio .ps-layer-order button{background:#191722;border:1px solid #ffffff18;color:#d8d1e7;border-radius:8px}
+.plak-studio .ps-preset-row button:hover,.plak-studio .ps-align-tools button:hover,.plak-studio .ps-prop-actions button:hover,.plak-studio .ps-layer-order button:hover{background:#2b2040;border-color:#8b5cf6;color:#fff}
+.plak-studio .ps-hint{background:#1b1727;border:1px solid #ffffff10;color:#b3a6ce;border-radius:10px}
+.plak-studio .ps-layer{color:#ddd6ec}.plak-studio .ps-layer:hover{background:#1b1727}.plak-studio .ps-layer.selected{background:#291d40;border-color:#8b5cf6;box-shadow:inset 3px 0 #8b5cf6}
+.plak-studio .ps-layer-thumb{background:#282039;color:#c4b5fd}.plak-studio .ps-layer-actions button{background:#191722;border-color:#ffffff18;color:#b8afca}
+.plak-studio .ps-stage{background:#101017}.plak-studio .ps-stage-top{color:#958ba8}.plak-studio .ps-stage-top b{color:#e7e0f5}
+.plak-studio .ps-stage-scroll{background-color:#101017;background-image:radial-gradient(#ffffff12 .8px,transparent .8px);background-size:18px 18px}
+.plak-studio .ps-grid-toggle{background:#191722;border-color:#ffffff18;color:#c7bddb;border-radius:8px}.plak-studio .ps-grid-toggle.on{background:#2a1e40;border-color:#8b5cf6;color:#d8caff}
+.plak-studio .ps-canvas-wrap{filter:drop-shadow(0 20px 44px #0008)}.plak-studio .ps-canvas{box-shadow:0 0 0 1px #ffffff25,0 0 0 5px #ffffff04}
+.plak-studio .ps-object.is-selected{outline:1px solid #a78bfa;box-shadow:0 0 0 1px #8b5cf655}
+.plak-studio .ps-resize-handle{border-color:#8b5cf6;background:#f5f3ff;border-radius:3px}.plak-studio .ps-rotate-handle{border-color:#8b5cf6;background:#211831;color:#c4b5fd}
+.plak-studio .ps-bottom-bar{background:#13121a;border-color:#ffffff13;color:#a49bb7}.plak-studio .ps-zoom button{background:#1b1924;border-color:#ffffff18;color:#c4b5fd}.plak-studio .ps-zoom input,.plak-studio input[type=range]{accent-color:#8b5cf6}
+.plak-studio .ps-right-heading{color:#b8aecb}.plak-studio .ps-right-heading span{background:#2a1e40;color:#c4b5fd}.plak-studio .ps-prop-section h4{color:#eee8f8}.plak-studio .ps-prop-grid label>span{color:#9b91ae}.plak-studio .ps-opacity span,.plak-studio .ps-selection-info{color:#9b91ae}
+.plak-studio .ps-empty-properties{color:#a49bb7}.plak-studio .ps-empty-properties>b{color:#eee8f8}
+.plak-studio .ps-reopen,.plak-studio .ps-panel-edge{background:#191722;border-color:#ffffff20;color:#c4b5fd;box-shadow:0 8px 22px #0005}
+.plak-studio .ps-error{background:#2b151c;border-color:#7f1d35;color:#fda4af}
+.plak-studio .ps-template-select option{background:#17151f;color:#f4f1fb}
+.plak-studio button:focus-visible,.plak-studio input:focus-visible,.plak-studio select:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+@media(max-width:760px){.plak-studio .ps-left,.plak-studio .ps-right{background:#121119;border-color:#ffffff18;box-shadow:0 20px 60px #0009}}

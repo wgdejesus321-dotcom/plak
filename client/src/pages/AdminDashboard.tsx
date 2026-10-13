@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowUpRight, BarChart3, Copy, Eye, LayoutTemplate, Pencil, Plus, Search, Send, Sparkles, UtensilsCrossed } from "lucide-react";
+import { BarChart3, Copy, Eye, Pencil, Plus, Search, Send, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { AdminShell } from "@/components/AdminShell";
 import { deleteBusiness, duplicateBusiness, getPortfolioStats, listBusinesses, setBusinessStatus, setBusinessWorkflow, type PortfolioStats } from "@/lib/data";
@@ -70,15 +70,6 @@ export default function AdminDashboard() {
     </header>
 
     {error && <p role="alert" className="alert-error">{error}</p>}
-
-    <section className="mt-6 grid gap-4 lg:grid-cols-2" aria-label="Produtos do PLAK Studio">
-      <article className="group rounded-[24px] border border-[#dce5df] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6">
-        <div className="flex items-start gap-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#edf4df] text-[#506b42]"><LayoutTemplate size={22}/></span><div className="min-w-0 flex-1"><p className="text-[10px] font-black uppercase tracking-[.16em] text-[#7a9270]">Produto 01</p><h2 className="mt-1 text-xl font-black tracking-tight text-[#20382f]">Criador de Bio-sites</h2><p className="mt-2 text-sm leading-6 text-[#77867b]">Páginas profissionais, modelos editáveis, identidade visual e links personalizados para cada negócio.</p><div className="mt-4 flex flex-wrap items-center gap-3"><Link href="/admin/templates" className="inline-flex items-center gap-2 rounded-full bg-[#d8ee77] px-4 py-2.5 text-xs font-black text-[#17262d]">Explorar modelos <ArrowUpRight size={14}/></Link><Link href="/admin/create" className="text-xs font-bold text-[#627367] underline underline-offset-4">Criar Bio-site</Link></div></div></div>
-      </article>
-      <article className="group rounded-[24px] border border-[#dce5df] bg-[#182a24] p-5 text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6">
-        <div className="flex items-start gap-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#d8ee77] text-[#172d24]"><UtensilsCrossed size={22}/></span><div className="min-w-0 flex-1"><p className="text-[10px] font-black uppercase tracking-[.16em] text-[#d8ee77]">Produto 02</p><h2 className="mt-1 text-xl font-black tracking-tight">Web Cardápios & pedidos</h2><p className="mt-2 text-sm leading-6 text-white/65">Cardápios digitais personalizáveis, carrinho de compras, pedidos em tempo real, painel operacional e tela de cozinha.</p><div className="mt-4 flex flex-wrap items-center gap-3"><Link href="/admin/cardapios" className="inline-flex items-center gap-2 rounded-full bg-[#d8ee77] px-4 py-2.5 text-xs font-black text-[#17262d]">Abrir criador <ArrowUpRight size={14}/></Link><Link href="/painel/pedidos" className="text-xs font-bold text-white/75 underline underline-offset-4">Painel de pedidos</Link></div></div></div>
-      </article>
-    </section>
 
     <section className="sx-metrics" aria-label="Indicadores">
       <Metric label="Total de clientes" value={number.format(businesses.length)} />
