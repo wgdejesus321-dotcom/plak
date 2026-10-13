@@ -60,12 +60,12 @@ export default function AdminDashboard() {
     <header className="sx-header">
       <div>
         <p className="sx-eyebrow">PLAK Studio · {plan.label}</p>
-        <h1>Central de BioSites</h1>
-        <p>Crie, revise e entregue páginas profissionais para seus clientes. A estrutura de planos está preparada, sem cobrança ou bloqueio ativo. BioSites: {limit}.</p>
+        <h1>Seu espaço de criação</h1>
+        <p>Organize seus projetos e crie páginas profissionais com a identidade de cada negócio. A estrutura de planos está preparada, sem cobrança ou bloqueio ativo. BioSites: {limit}.</p>
       </div>
       <div className="sx-header-actions">
         <Link href="/admin/templates" className="sx-button sx-secondary"><Sparkles size={16} />Modelos</Link>
-        <Link href="/admin/create" className="sx-button sx-primary"><Plus size={16} />Criar Novo BioSite</Link>
+        <Link href="/admin/create" className="sx-button sx-primary"><Plus size={16} />Criar Bio-site</Link>
       </div>
     </header>
 
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
       <Metric label="BioSites publicados" value={number.format(counts.published)} tone="live" />
       <Metric label="BioSites em edição" value={number.format(counts.editing + counts.review)} hint={`${counts.review} em revisão`} />
       <Metric label="Visualizações · 30 dias" value={stats ? number.format(stats.views) : "—"} hint={statsError || "Páginas publicadas"} />
-      <Metric label="Conversões · 30 dias" value={stats ? number.format(stats.conversions) : "—"} hint={stats ? `${number.format(stats.clicks)} cliques + ${number.format(stats.leads)} leads` : statsError} />
+      <Metric label="Conversões · 30 dias" value={stats ? number.format(stats.conversions) : "—"} hint={stats ? `${number.format(stats.clicks)} cliques` : statsError} />
     </section>
 
     <section className="sx-section" aria-labelledby="clients-title">
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
       {loading ? <div className="sx-empty" role="status">Carregando clientes…</div> : filtered.length === 0 ? <div className="sx-empty">
         <strong>{businesses.length ? "Nenhum resultado." : "Seu primeiro cliente começa aqui."}</strong>
         <p>{businesses.length ? "Ajuste a busca ou os filtros." : "Escolha o segmento, preencha os dados e gere um BioSite pronto para revisar."}</p>
-        {!businesses.length && <Link href="/admin/create" className="sx-button sx-primary"><Plus size={16} />Criar Novo BioSite</Link>}
+        {!businesses.length && <Link href="/admin/create" className="sx-button sx-primary"><Plus size={16} />Criar Bio-site</Link>}
       </div> : <ul className="sx-clients">{filtered.map(item => <ClientRow key={item.id} business={item} busy={busy === item.id} run={run} />)}</ul>}
     </section>
   </div></AdminShell>;

@@ -55,3 +55,7 @@
 .plak-studio .ps-template-select option{background:#17151f;color:#f4f1fb}
 .plak-studio button:focus-visible,.plak-studio input:focus-visible,.plak-studio select:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
 @media(max-width:760px){.plak-studio .ps-left,.plak-studio .ps-right{background:#121119;border-color:#ffffff18;box-shadow:0 20px 60px #0009}}
+
+/* Editor workspace breathing room and responsive panel sizing */
+@media(min-width:1200px){.ps-workspace{grid-template-columns:290px minmax(440px,1fr) 320px!important}.ps-workspace.left-collapsed{grid-template-columns:0 minmax(440px,1fr) 320px!important}.ps-workspace.right-collapsed{grid-template-columns:290px minmax(440px,1fr) 0!important}.ps-stage-scroll{padding:42px!important}.ps-left,.ps-right{min-width:0}.ps-properties{padding:18px 19px 28px}.ps-prop-section{padding:18px 0}.ps-topbar{padding-inline:20px;gap:14px}}
+@media(min-width:1600px){.ps-workspace{grid-template-columns:310px minmax(520px,1fr) 340px!important}.ps-workspace.left-collapsed{grid-template-columns:0 minmax(520px,1fr) 340px!important}.ps-workspace.right-collapsed{grid-template-columns:310px minmax(520px,1fr) 0!important}}
