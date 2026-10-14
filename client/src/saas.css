@@ -180,22 +180,3 @@ main { animation:sx-enter .38s cubic-bezier(.2,.8,.2,1) both; }
 @media (max-width:640px) { .sx-metrics,.sx-fields,.sx-uploads,.sx-segment-grid,.sx-template-grid,.pk-steps,.sx-stepper { grid-template-columns:1fr; } .pk-hero { flex-direction:column; border-radius:24px; } .pk-copy { flex-direction:column; } .pk-copy button { width:100%; } }
 @media (prefers-reduced-motion:reduce) { main { animation:none; } .sx-button,.sx-segment,.sx-template,.sx-tile,.pk-primary,.pk-copy button { transition:none; } .sx-button:hover:not(:disabled),.sx-segment:hover,.sx-template:hover,.sx-tile:hover { transform:none; } }
 
-
-/* PLAK Studio visual refresh — graphite / violet, consistent across management screens */
-:root{--sx-ink:#f4f2fb;--sx-muted:#9a99ad;--sx-line:rgba(255,255,255,.09);--sx-paper:#11121a;--sx-soft:#171822;--sx-accent:#8b5cf6}
-.sx-page,.sx-wizard,.pk-delivery,.pk-preview{max-width:1500px;gap:28px;color:#f4f2fb}
-.sx-header h1,.sx-wizard-head h1{color:#f6f4ff;letter-spacing:-.065em}
-.sx-header p:not(.sx-eyebrow){color:#a5a3b8}
-.sx-eyebrow,.eyebrow{color:#b5a0ff!important}
-.sx-metrics{grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px}
-.sx-metric,.sx-section,.sx-client,.sx-empty,.sx-filters,.sx-chips,.sx-search,.sx-page select,.sx-page input{background:#14151e!important;border-color:rgba(255,255,255,.09)!important;color:#f4f2fb}
-.sx-metric{border:1px solid rgba(255,255,255,.09)!important;border-radius:18px;box-shadow:0 12px 32px rgba(0,0,0,.12)}
-.sx-section{border:1px solid rgba(255,255,255,.09)!important;border-radius:22px;padding:22px}
-.sx-section h2,.sx-client h3,.sx-client strong,.section-title{color:#f4f2fb!important}
-.sx-section p,.sx-client p,.sx-muted{color:#a2a1b5}
-.sx-button.sx-primary{background:#7c3aed!important;color:white!important;box-shadow:0 8px 24px rgba(124,58,237,.22)}
-.sx-button.sx-secondary,.sx-chips button{background:#1a1b26!important;color:#d8d5e8!important;border-color:rgba(255,255,255,.1)!important}
-.sx-chips button.is-active{background:rgba(124,58,237,.2)!important;border-color:rgba(167,139,250,.6)!important;color:#d9caff!important}
-.sx-page input::placeholder{color:#77768b}
-@media(max-width:1000px){.sx-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-page,.sx-wizard{gap:20px}}
-@media(max-width:640px){.sx-metrics{grid-template-columns:1fr 1fr}.sx-section{padding:15px;border-radius:18px}.sx-header h1{font-size:2.5rem}}

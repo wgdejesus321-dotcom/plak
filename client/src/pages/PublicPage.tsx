@@ -10,7 +10,7 @@ function source(): AnalyticsSource { const value = new URLSearchParams(window.lo
 function device(): DeviceType { return /ipad|tablet/i.test(navigator.userAgent) ? "tablet" : /mobile|iphone|android/i.test(navigator.userAgent) ? "mobile" : "desktop"; }
 function setMeta(name: string, content: string, property = false) { const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`; let element = document.head.querySelector<HTMLMetaElement>(selector); if (!element) { element = document.createElement("meta"); property ? element.setAttribute("property", name) : element.setAttribute("name", name); document.head.appendChild(element); } element.content = content; }
 
-export default function PublicPage({ previewSlug, previewBundle }: { previewSlug?: string; previewBundle?: BusinessBundle } = {}) {
+export default function PublicPage({ previewSlug, previewBundle, params: routeParams }: { previewSlug?: string; previewBundle?: BusinessBundle; params?: { slug?: string } } = {}) {
   const preview = previewSlug !== undefined || previewBundle !== undefined;
   const [, params] = useRoute("/:slug");
   const [bundle, setBundle] = useState<BusinessBundle | null>(null);
@@ -19,7 +19,7 @@ export default function PublicPage({ previewSlug, previewBundle }: { previewSlug
   const [selected, setSelected] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [shared, setShared] = useState(false); const [lead, setLead] = useState({ name: "", whatsapp: "", email: "", message: "" }); const [leadConsent, setLeadConsent] = useState(false); const [leadSent, setLeadSent] = useState(false); const [leadError, setLeadError] = useState(""); const [leadSending, setLeadSending] = useState(false);
-  const slug = previewSlug ?? params?.slug ?? "";
+  const slug = previewSlug ?? routeParams?.slug ?? params?.slug ?? "";
 
   useEffect(() => {
     let active = true;

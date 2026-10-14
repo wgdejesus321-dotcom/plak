@@ -34,7 +34,7 @@ export function detectSegment(prompt: string): SegmentId {
 }
 
 export function detectCity(prompt: string) {
-  const match = prompt.match(/\bem\s+([A-ZÀ-Ý][\p{L}]+(?:\s+(?:de|da|do|dos|das)?\s*[A-ZÀ-Ý][\p{L}]+)*)/u);
+  const match = prompt.match(/\bem\s+([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+(?:de|da|do|dos|das)?\s*[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)*)/);
   return match?.[1]?.trim() ?? "";
 }
 
