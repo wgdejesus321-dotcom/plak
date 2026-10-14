@@ -13,7 +13,7 @@ class PreviewBoundary extends Component<{ children: ReactNode }, { failed: boole
 /** Renders the real public page from unsaved editor state, without registering analytics or leads. */
 export function LivePreview({ form, id }: { form: BusinessForm; id?: string }) {
   const bundle = useMemo<BusinessBundle>(() => {
-    const business = { ...form, id: id || "preview", status: "draft", published_at: null, created_at: "", updated_at: "", created_by: null, features: { ...form.features, canvas_objects: [] } } as unknown as Business;
+    const business = { ...form, id: id || "preview", status: "draft", published_at: null, created_at: "", updated_at: "", created_by: null, features: { ...form.features } } as unknown as Business;
     return { business, links: form.links.map((link, position) => ({ ...link, position })), media: form.media.map((media, position) => ({ ...media, position })) };
   }, [form, id]);
   return <PreviewBoundary><PublicPage previewBundle={bundle} /></PreviewBoundary>;

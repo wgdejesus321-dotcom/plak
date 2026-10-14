@@ -1,0 +1,8 @@
+ALTERACOES_E_BUILD.md
+client/src/components/ErrorBoundary.tsx
+client/src/components/LivePreview.tsx
+client/src/lib/data.ts
+client/src/main.tsx
+client/src/pages/Home.tsx
+client/src/pages/PublicPage.tsx
+client/src/pages/homePremium.css

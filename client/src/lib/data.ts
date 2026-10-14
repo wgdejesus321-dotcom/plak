@@ -25,7 +25,7 @@ export async function getBusinessBySlug(slug: string, publishedOnly = true) {
   return {
     business: data as Business,
     links: ((data as any).business_links ?? []).sort((a: BusinessLink, b: BusinessLink) => a.position - b.position),
-    media: ((data as any).business_media ?? []).filter((item: BusinessMedia) => !item.url.startsWith("blob:")).sort((a: BusinessMedia, b: BusinessMedia) => a.position - b.position),
+    media: ((data as any).business_media ?? []).filter((item: BusinessMedia) => item && typeof item.url === "string" && !item.url.startsWith("blob:")).sort((a: BusinessMedia, b: BusinessMedia) => a.position - b.position),
   } as BusinessBundle;
 }
 
