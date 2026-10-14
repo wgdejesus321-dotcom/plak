@@ -75,8 +75,8 @@ export default function AdminDashboard() {
       <Metric label="Total de clientes" value={number.format(businesses.length)} />
       <Metric label="BioSites publicados" value={number.format(counts.published)} tone="live" />
       <Metric label="BioSites em edição" value={number.format(counts.editing + counts.review)} hint={`${counts.review} em revisão`} />
-      <Metric label="Visualizações · 30 dias" value={stats ? number.format(stats.views) : "—"} hint={statsError || "Páginas publicadas"} />
-      <Metric label="Conversões · 30 dias" value={stats ? number.format(stats.conversions) : "—"} hint={stats ? `${number.format(stats.clicks)} cliques` : statsError} />
+      <Metric label="Visitas gerais · 30 dias" value={stats ? number.format(stats.views) : "—"} hint={statsError || "Todos os BioSites publicados"} />
+      <Metric label="Ações gerais · 30 dias" value={stats ? number.format(stats.conversions) : "—"} hint={stats ? `${number.format(stats.clicks)} cliques` : statsError} />
     </section>
 
     <section className="sx-section" aria-labelledby="clients-title">

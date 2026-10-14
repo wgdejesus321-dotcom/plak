@@ -68,18 +68,36 @@ export async function saveBusiness(rawForm: BusinessForm, id?: string) {
     seo_image_url: form.seo_image_url || null,
     features: form.features,
   };
-  const { data, error } = await db.rpc("save_biosite", {
-    p_id: id ?? null,
-    p_business: payload,
-    p_links: form.links.map((link, position) => ({ label: link.label, url: link.url, kind: link.kind, color: link.color, position })),
-    p_media: form.media.map((media, position) => ({ type: media.type, url: media.url, storage_path: media.storage_path ?? null, alt: media.alt || "Foto do cliente", position, object_position_x: media.object_position_x ?? 50, object_position_y: media.object_position_y ?? 50, object_scale: media.object_scale ?? 1 })),
-  });
-  if (error) {
-    if (error.code === "PGRST202") throw new Error("Aplique a migration 0006 no Supabase antes de salvar BioSites.");
-    if (error.code === "23505") throw new Error("Esse endereço já está em uso. Escolha outro nome curto.");
-    throw error;
+  const links = form.links.map((link, position) => ({ label: link.label, url: link.url, kind: link.kind, color: link.color, position }));
+  const media = form.media.map((item, position) => ({ type: item.type, url: item.url, storage_path: item.storage_path ?? null, alt: item.alt || "Foto do cliente", position, object_position_x: item.object_position_x ?? 50, object_position_y: item.object_position_y ?? 50, object_scale: item.object_scale ?? 1 }));
+  const rpcResult = await db.rpc("save_biosite", { p_id: id ?? null, p_business: payload, p_links: links, p_media: media });
+  const rpcError = rpcResult.error;
+  const missingRpc = rpcError && (rpcError.code === "PGRST202" || rpcError.code === "42883" || /save_biosite|function .* does not exist/i.test(rpcError.message || ""));
+  if (!rpcError) return rpcResult.data as Business;
+  if (rpcError.code === "23505") throw new Error("Esse endereço já está em uso. Escolha outro nome curto.");
+  if (!missingRpc) throw new Error(rpcError.message || "Não foi possível salvar o BioSite.");
+
+  // Compatibility path for projects where migration 0006 was not applied yet.
+  const direct = id
+    ? await db.from("businesses").update(payload).eq("id", id).select(businessColumns).single()
+    : await db.from("businesses").insert(payload).select(businessColumns).single();
+  if (direct.error) {
+    if (direct.error.code === "23505") throw new Error("Esse endereço já está em uso. Escolha outro nome curto.");
+    throw new Error(direct.error.message || "Não foi possível salvar o BioSite. Verifique a configuração do Supabase.");
   }
-  const business = data as Business;
+  const business = direct.data as Business;
+  const clearLinks = await db.from("business_links").delete().eq("business_id", business.id);
+  if (clearLinks.error) throw new Error(clearLinks.error.message || "Não foi possível atualizar os botões do BioSite.");
+  if (links.length) {
+    const result = await db.from("business_links").insert(links.map((link) => ({ ...link, business_id: business.id })));
+    if (result.error) throw new Error(result.error.message || "Não foi possível salvar os botões do BioSite.");
+  }
+  const clearMedia = await db.from("business_media").delete().eq("business_id", business.id);
+  if (clearMedia.error) throw new Error(clearMedia.error.message || "Não foi possível atualizar as mídias do BioSite.");
+  if (media.length) {
+    const result = await db.from("business_media").insert(media.map((item) => ({ ...item, business_id: business.id })));
+    if (result.error) throw new Error(result.error.message || "Não foi possível salvar as mídias do BioSite.");
+  }
   return business;
 }
 
@@ -121,16 +139,19 @@ export async function getAnalytics(businessId: string, days: number): Promise<An
   const views = rows.filter((row) => row.event_type === "view").length;
   const clicks = rows.filter((row) => row.event_type === "click").length;
   const shares = rows.filter((row) => row.event_type === "share").length;
-  const daysSet = new Set(rows.map((row) => row.created_at.slice(0, 10)));
+  const viewRows = rows.filter((row) => row.event_type === "view");
+  const daysSet = new Set(viewRows.map((row) => row.created_at.slice(0, 10)));
   const devices: AnalyticsSummary["devices"] = { mobile: 0, tablet: 0, desktop: 0 };
   const sources: AnalyticsSummary["sources"] = { instagram: 0, whatsapp: 0, google: 0, placa: 0, direct: 0, other: 0 };
   const clickMap = new Map<string, number>();
   const dailyMap = new Map<string, number>();
   rows.forEach((row) => {
-    if (row.device_type in devices) devices[row.device_type] += 1;
-    if (row.source in sources) sources[row.source] += 1;
+    if (row.event_type === "view") {
+      if (row.device_type in devices) devices[row.device_type] += 1;
+      if (row.source in sources) sources[row.source] += 1;
+      dailyMap.set(row.created_at.slice(0, 10), (dailyMap.get(row.created_at.slice(0, 10)) ?? 0) + 1);
+    }
     if (row.event_type === "click") clickMap.set(row.target, (clickMap.get(row.target) ?? 0) + 1);
-    if (row.event_type === "view") dailyMap.set(row.created_at.slice(0, 10), (dailyMap.get(row.created_at.slice(0, 10)) ?? 0) + 1);
   });
   const daily = Array.from({ length: days }, (_, index) => {
     const date = new Date(Date.now() - (days - index - 1) * 86400000).toISOString().slice(0, 10);
